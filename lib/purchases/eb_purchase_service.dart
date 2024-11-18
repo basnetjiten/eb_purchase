@@ -54,10 +54,7 @@ class EbPurchaseService extends EbPurchaseRepo {
     if (!isAvailable) {
       return null;
     }
-    ProductDetailsResponse response =
-        await _inAppPurchase.queryProductDetails(_productIds);
-
-    return response;
+    return await _inAppPurchase.queryProductDetails(_productIds);
   }
 
   /// Initiates a purchase for a given product.
@@ -65,9 +62,10 @@ class EbPurchaseService extends EbPurchaseRepo {
   /// - [productDetails] Product user wants to buy
   /// - [onError] callback if the purchase encounters an error.
   @override
-  Future<void> buyProduct(
-      {required PurchaseParam purchaseParam,
-      required Function(String) onError}) async {
+  Future<void> buyProduct({
+    required PurchaseParam purchaseParam,
+    required Function(String) onError,
+  }) async {
     try {
       await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
@@ -75,7 +73,7 @@ class EbPurchaseService extends EbPurchaseRepo {
     }
   }
 
-  // /// Verifies the status of purchases.
+  // /// Verifies the status of purchases. Usually it is used from the API.
   // ///
   // ///  - `onSuccess`: callback for successful purchases
   // ///  - `onError`: callback for failed purchases.
@@ -108,8 +106,9 @@ class EbPurchaseService extends EbPurchaseRepo {
   /// *[productDetails]: Previous Purchased product.
   ///
   /// Returns *[PurchaseParam]: purchase product details.
-  PurchaseParam checkAndroidSubscription(ProductDetails details,
-      String? oldProductId, {ReplacementMode? replacementMode}) {
+  PurchaseParam checkAndroidSubscription(
+      ProductDetails details, String? oldProductId,
+      {ReplacementMode? replacementMode}) {
     if (Platform.isAndroid) {
       final GooglePlayPurchaseDetails? oldSubscription =
           getOldSubscription(details, oldProductId);

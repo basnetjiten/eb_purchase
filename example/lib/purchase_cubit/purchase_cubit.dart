@@ -4,8 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:eb_purchase/purchases/eb_purchase_service.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/billing_client_wrappers.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:injectable/injectable.dart';
 
 part 'purchase_state.dart';
@@ -20,7 +18,6 @@ class PurchaseCubit extends Cubit<PurchaseState> {
 
   late EbPurchaseService _ebPurchaseService;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
-  final List<PurchaseDetails> _purchases = [];
 
   ///  Listener to  broadcast stream to get real time update for purchases.
   void _initRealTimePurchaseUpdate() {
@@ -40,7 +37,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
 
   Future<void> onDetailsFetched(List<PurchaseDetails> purchaseDetails) async {
     emit(state.copyWith(purchaseInProgress: false));
-    _purchases.addAll(purchaseDetails);
+
     for (final purchaseDetail in purchaseDetails) {
       // Complete any pending purchases right away
       if (purchaseDetail.pendingCompletePurchase) {
@@ -86,16 +83,17 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   ///  Query product details for the given set of IDs.
   Future<void> fetchProducts() async {
     emit(state.copyWith(productFetching: true));
-    final bool isAvailable = await _ebPurchaseService.isStoreAvailable;
-
-    if (!isAvailable) {
-      return;
-    }
 
     final ProductDetailsResponse? productDetailResponse =
         await _ebPurchaseService.fetchProducts();
 
     if (productDetailResponse == null) {
+      emit(
+        state.copyWith(
+          productFetching: false,
+          message: 'No Active Products',
+        ),
+      );
       return;
     }
 
