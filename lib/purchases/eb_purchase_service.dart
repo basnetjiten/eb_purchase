@@ -27,6 +27,7 @@ class EbPurchaseService extends EbPurchaseRepo {
   Future<void> configure({
     required Set<String> productIds,
     required Function(List<PurchaseDetails>) onDetailsFetched,
+    Function(dynamic error)? onError,
   }) async {
     _productIds.addAll(productIds);
     _subscription = _inAppPurchase.purchaseStream.listen((purchaseDetails) {
