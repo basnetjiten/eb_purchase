@@ -17,7 +17,6 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   }
 
   late EbPurchaseService _ebPurchaseService;
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   ///  Listener to  broadcast stream to get real time update for purchases.
   void _initRealTimePurchaseUpdate() {
@@ -27,7 +26,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
           "monthlyProductId",
           "yearlyProductId",
         },
-        onDetailsFetched: onDetailsFetched,
+        onDetailsFetched: onProductDetailsFetched,
       );
   }
 
@@ -35,7 +34,8 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   ///
   /// *[purchaseDetails]:  Represents the transaction details of a purchase.
 
-  Future<void> onDetailsFetched(List<PurchaseDetails> purchaseDetails) async {
+  Future<void> onProductDetailsFetched(
+      List<PurchaseDetails> purchaseDetails) async {
     emit(state.copyWith(purchaseInProgress: false));
 
     for (final purchaseDetail in purchaseDetails) {
@@ -87,38 +87,27 @@ class PurchaseCubit extends Cubit<PurchaseState> {
     final ProductDetailsResponse? productDetailResponse =
         await _ebPurchaseService.fetchProducts();
 
-    if (productDetailResponse == null) {
+    final String? errorMessage = productDetailResponse?.error?.message;
+
+    if (productDetailResponse == null ||
+        errorMessage != null ||
+        productDetailResponse.productDetails.isEmpty) {
+
       emit(
         state.copyWith(
           productFetching: false,
-          message: 'No Active Products',
+          message: errorMessage ?? 'No Active Products',
         ),
       );
       return;
     }
 
-    if (productDetailResponse.error != null) {
-      emit(
-        state.copyWith(
-          productFetching: false,
-          message: productDetailResponse.error!.message,
-        ),
-      );
-    } else if (productDetailResponse.productDetails.isEmpty) {
-      emit(
-        state.copyWith(
-          productFetching: false,
-          message: 'No Active Products',
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          productFetching: false,
-          productDetails: productDetailResponse.productDetails,
-        ),
-      );
-    }
+    emit(
+      state.copyWith(
+        productFetching: false,
+        productDetails: productDetailResponse.productDetails,
+      ),
+    );
   }
 
   /// Makes product purchase: Purchasable item can be Consumable, Non-Consumable etc
@@ -134,7 +123,9 @@ class PurchaseCubit extends Cubit<PurchaseState> {
         .checkAndroidSubscription(productDetails, oldProductId);
 
     await _ebPurchaseService.buyProduct(
-        purchaseParam: purchaseParam, onError: (String error) {});
+      purchaseParam: purchaseParam,
+      onError: (String error) => emit(state.copyWith(message: error)),
+    );
 
     await Future<void>.delayed(const Duration(milliseconds: 500))
         .then((void value) => emit(state.copyWith(purchaseInProgress: false)));
