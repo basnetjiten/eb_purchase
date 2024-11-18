@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'eb_purchase_repo.dart';
 
@@ -96,6 +98,35 @@ class EbPurchaseService extends EbPurchaseRepo {
     _purchases.clear();
     _productIds.clear();
     _subscription.cancel();
+  }
+
+  /// Checks the purchase parameter for Android and IOS platform.
+  /// For Android It checks the old subscription to determine if the user is upgrading or downgrading the subscription.
+  ///
+  /// IOS handles this internally.
+  ///
+  /// *[productDetails]: Previous Purchased product.
+  ///
+  /// Returns *[PurchaseParam]: purchase product details.
+  PurchaseParam checkAndroidSubscription(ProductDetails details,
+      String? oldProductId, {ReplacementMode? replacementMode}) {
+    if (Platform.isAndroid) {
+      final GooglePlayPurchaseDetails? oldSubscription =
+          getOldSubscription(details, oldProductId);
+
+      return GooglePlayPurchaseParam(
+        productDetails: details,
+        changeSubscriptionParam: (oldSubscription != null)
+            ? ChangeSubscriptionParam(
+                oldPurchaseDetails: oldSubscription,
+                replacementMode:
+                    replacementMode ?? ReplacementMode.withTimeProration,
+              )
+            : null,
+      );
+    } else {
+      return PurchaseParam(productDetails: details);
+    }
   }
 
   /// This Checks the user's old subscription in Android platform

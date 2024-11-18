@@ -132,8 +132,8 @@ class PurchaseCubit extends Cubit<PurchaseState> {
       {required ProductDetails productDetails, String? oldProductId}) async {
     emit(state.copyWith(message: null, purchaseInProgress: true));
 
-    final PurchaseParam purchaseParam =
-        _checkPlatformSubscription(productDetails, oldProductId);
+    final PurchaseParam purchaseParam = _ebPurchaseService
+        .checkAndroidSubscription(productDetails, oldProductId);
 
     await _ebPurchaseService.buyProduct(
         purchaseParam: purchaseParam, onError: (String error) {});
@@ -142,36 +142,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
         .then((void value) => emit(state.copyWith(purchaseInProgress: false)));
   }
 
-  /// Checks the purchase parameter for Android and IOS platform.
-  /// For Android It checks the old subscription to determine if the user is upgrading or downgrading the subscription.
-  ///
-  /// IOS handles this internally.
-  ///
-  /// *[productDetails]: Previous Purchased product.
-  ///
-  /// Returns *[PurchaseParam]: purchase product details.
-  PurchaseParam _checkPlatformSubscription(
-      ProductDetails productDetailsToBuy, String? oldProductId) {
-    if (Platform.isAndroid) {
-      final GooglePlayPurchaseDetails? oldSubscription = _ebPurchaseService
-          .getOldSubscription(productDetailsToBuy, oldProductId);
-
-      return GooglePlayPurchaseParam(
-        productDetails: productDetailsToBuy,
-        changeSubscriptionParam: (oldSubscription != null)
-            ? ChangeSubscriptionParam(
-                oldPurchaseDetails: oldSubscription,
-                replacementMode: ReplacementMode.withTimeProration,
-              )
-            : null,
-      );
-    } else {
-      return PurchaseParam(productDetails: productDetailsToBuy);
-    }
-  }
-
   void initiateRestore() => _ebPurchaseService.restorePurchases();
-
 
   void resetMessage() => emit(state.copyWith(message: null));
 
