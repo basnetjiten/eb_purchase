@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:eb_purchase/purchases/eb_purchase_service.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:injectable/injectable.dart';
 
 part 'purchase_state.dart';
@@ -92,7 +94,6 @@ class PurchaseCubit extends Cubit<PurchaseState> {
     if (productDetailResponse == null ||
         errorMessage != null ||
         productDetailResponse.productDetails.isEmpty) {
-
       emit(
         state.copyWith(
           productFetching: false,
@@ -100,6 +101,27 @@ class PurchaseCubit extends Cubit<PurchaseState> {
         ),
       );
       return;
+    }
+
+    for (GooglePlayProductDetails data in (productDetailResponse.productDetails
+        as List<GooglePlayProductDetails>)) {
+      print('DETAILS '
+          'id :${data.id}\n '
+          'price :${data.price}\n'
+          'currencyCode:${data.currencyCode}\n'
+          'currencySymbol:${data.currencySymbol}\n'
+          'description:${data.description}\n'
+          'subscriptionIndex:${data.subscriptionIndex}\n');
+
+      data.productDetails.subscriptionOfferDetails
+          ?.forEach((SubscriptionOfferDetailsWrapper offer) {
+        print('OFFERS '
+            'basePlanId :${offer.basePlanId}\n '
+            'offerId :${offer.offerId}\n'
+            'offerTags:${offer.offerTags}\n'
+            'offerIdToken:${offer.offerIdToken}\n'
+            'pricingPhases:${offer.pricingPhases.length}\n');
+      });
     }
 
     emit(
@@ -119,8 +141,11 @@ class PurchaseCubit extends Cubit<PurchaseState> {
       {required ProductDetails productDetails, String? oldProductId}) async {
     emit(state.copyWith(message: null, purchaseInProgress: true));
 
-    final PurchaseParam purchaseParam = _ebPurchaseService
-        .checkAndroidSubscription(productDetails, oldProductId);
+    final PurchaseParam purchaseParam =
+        _ebPurchaseService.checkPlatformSubscription(
+      details: productDetails,
+      oldProductId: oldProductId,
+    );
 
     await _ebPurchaseService.buyProduct(
       purchaseParam: purchaseParam,

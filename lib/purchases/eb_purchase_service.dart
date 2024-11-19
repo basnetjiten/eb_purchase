@@ -106,9 +106,10 @@ class EbPurchaseService extends EbPurchaseRepo {
   /// *[productDetails]: Previous Purchased product.
   ///
   /// Returns *[PurchaseParam]: purchase product details.
-  PurchaseParam checkAndroidSubscription(
-      ProductDetails details, String? oldProductId,
-      {ReplacementMode? replacementMode}) {
+  PurchaseParam checkPlatformSubscription(
+      {required ProductDetails details,
+      String? oldProductId,
+      ReplacementMode? replacementMode}) {
     if (Platform.isAndroid) {
       final GooglePlayPurchaseDetails? oldSubscription =
           getOldSubscription(details, oldProductId);
