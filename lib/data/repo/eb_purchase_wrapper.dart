@@ -289,7 +289,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }) {
     if (Platform.isAndroid) {
       final PurchaseDetails? oldSubscription = getOldPurchaseDetails(
+        oldProductId,
         basePlanIdOrId,
+        productDetails,
       );
 
       return GooglePlayPurchaseParam(
@@ -297,7 +299,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         changeSubscriptionParam:
             (oldSubscription != null)
                 ? ChangeSubscriptionParam(
-                  oldPurchaseDetails: (oldSubscription as GooglePlayPurchaseDetails),
+                  oldPurchaseDetails:
+                      (oldSubscription as GooglePlayPurchaseDetails),
                   replacementMode:
                       replacementMode ?? ReplacementMode.chargeFullPrice,
                 )
@@ -317,14 +320,26 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   ///
   /// Returns GooglePlayPurchaseDetails
   @override
-  PurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId) {
+  PurchaseDetails? getOldPurchaseDetails(
+    String? oldProductId,
+    String basePlanIdOrId,
+    ProductDetails productDetails,
+  ) {
     PurchaseDetails? oldPurchaseDetails;
+    bool hasOldSubscription = false;
 
-
-    if (_purchases.isNotEmpty && _purchases.last.productID != basePlanIdOrId) {
-      print('PURCHASE ID ${_purchases.last.productID}::: ${basePlanIdOrId}');
-      oldPurchaseDetails = _purchases.last;
+    if (oldProductId != null) {
+      hasOldSubscription = _purchases.any(
+        (purchase) => purchase.productID == oldProductId,
+      );
     }
+
+    if (productDetails.id == basePlanIdOrId && hasOldSubscription) {
+      oldPurchaseDetails = _purchases.firstWhere(
+        (purchase) => purchase.productID == oldProductId,
+      );
+    }
+
     return oldPurchaseDetails;
   }
 

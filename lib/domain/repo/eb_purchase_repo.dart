@@ -47,9 +47,7 @@ abstract class EbPurchaseRepo {
   /// Parameters:
   /// * [purchaseDetail] Purchased item  to verify.
 
-  PurchaseStatus verifyPurchase({
-    required PurchaseDetails purchaseDetail,
-  });
+  PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail});
 
   /// This Checks the user's old subscription in Android platform
   ///
@@ -57,9 +55,15 @@ abstract class EbPurchaseRepo {
   ///
   ///
   /// *[oldProductId] Previous Purchased product ID
+  /// *[basePlanIdOrId] Product to buy
+  /// *[productDetails] ProductDetails of the product
   ///
   /// Returns GooglePlayPurchaseDetails
-  PurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId);
+  PurchaseDetails? getOldPurchaseDetails(
+    String? oldProductId,
+    String basePlanIdOrId,
+    ProductDetails productDetails,
+  );
 
   /// Returns `true` if the payment platform is ready and available.
   Future<bool> get isStoreAvailable;
