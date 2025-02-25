@@ -15,16 +15,23 @@ class PurchaseRepoImpl {
     );
   }
 
-  Future<void> fetchInAppProducts(
-          {required OnProductFetched onProductFetched,
-          OnError? onError}) async =>
-      await _ebPurchaseWrapper.fetchInAppProducts(
-          onError: onError, onProductFetched: onProductFetched);
+  Future<void> fetchInAppProducts({
+    required OnProductFetched onProductFetched,
+    OnError? onError,
+  }) async => await _ebPurchaseWrapper.fetchInAppProducts(
+    onError: onError,
+    onProductFetched: onProductFetched,
+  );
 
-  Future<void> purchaseProduct(
-      {required ProductDetails product, OnError? onError}) async {
-    final PurchaseParam param =
-        _ebPurchaseWrapper.checkPlatformSubscription(productDetails: product);
+  Future<void> purchaseProduct({
+    required String basePlanIdOrId,
+    required ProductDetails product,
+    OnError? onError,
+  }) async {
+    final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
+      productDetails: product,
+      basePlanIdOrId: basePlanIdOrId,
+    );
 
     await _ebPurchaseWrapper.buyProduct(
       purchaseParam: param,
@@ -35,9 +42,10 @@ class PurchaseRepoImpl {
   void initiateRestore({OnError? onError}) async =>
       await _ebPurchaseWrapper.restorePurchases(onError: onError);
 
-  void configure(
-      {required Set<String> productIds,
-      required OnPurchaseDetailsReceived onDetailsFetched}) {
+  void configure({
+    required Set<String> productIds,
+    required OnPurchaseDetailsReceived onDetailsFetched,
+  }) {
     _ebPurchaseWrapper.configure(
       productIds: productIds,
       onDetailsFetched: onDetailsFetched,
@@ -47,8 +55,9 @@ class PurchaseRepoImpl {
   PurchaseStatus verifyPurchase({required PurchaseDetails purchase}) =>
       _ebPurchaseWrapper.verifyPurchase(purchaseDetail: purchase);
 
-  Future<BasePurchaseModel> createPlatformSpecificPlan(
-          {required PurchaseDetails purchaseModel}) async =>
-      await _ebPurchaseWrapper.createPlatformSpecificPlan(
-          purchasedProduct: purchaseModel);
+  Future<BasePurchaseModel> createPlatformSpecificPlan({
+    required PurchaseDetails purchaseModel,
+  }) async => await _ebPurchaseWrapper.createPlatformSpecificPlan(
+    purchasedProduct: purchaseModel,
+  );
 }

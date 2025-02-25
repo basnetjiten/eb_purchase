@@ -8,6 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'purchase_cubit.freezed.dart';
+
 part 'purchase_state.dart';
 
 @injectable
@@ -21,10 +22,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   ///  Listener to  broadcast stream to get real time update for purchases.
   void _initRealTimePurchaseUpdate() {
     _purchaseRepoImpl.configure(
-      productIds: <String>{
-        "monthlyProductId",
-        "yearlyProductId",
-      },
+      productIds: <String>{"monthlyProductId", "yearlyProductId"},
       onDetailsFetched: onProductDetailsFetched,
     );
   }
@@ -57,7 +55,8 @@ class PurchaseCubit extends Cubit<PurchaseState> {
             _purchaseRepoImpl.completePurchase(purchaseDetail: purchaseDetail);
           } else {
             _resetPurchaseDetailAndShowMessage(
-                purchaseDetail.error?.message ?? 'Unknown error');
+              purchaseDetail.error?.message ?? 'Unknown error',
+            );
           }
           break;
 
@@ -81,22 +80,21 @@ class PurchaseCubit extends Cubit<PurchaseState> {
     emit(state.copyWith(productFetching: true));
 
     await _purchaseRepoImpl.fetchInAppProducts(
-        onProductFetched: (List<SubscriptionPlan> purchasePlans) {
-      emit(
-        state.copyWith(
-          productFetching: false,
-          purchasePlans: purchasePlans,
-        ),
-      );
-    }, onError: (error) {
-      emit(
-        state.copyWith(
-          productFetching: false,
-          message: error,
-          purchasePlans: [],
-        ),
-      );
-    });
+      onProductFetched: (List<SubscriptionPlan> purchasePlans) {
+        emit(
+          state.copyWith(productFetching: false, purchasePlans: purchasePlans),
+        );
+      },
+      onError: (error) {
+        emit(
+          state.copyWith(
+            productFetching: false,
+            message: error,
+            purchasePlans: [],
+          ),
+        );
+      },
+    );
   }
 
   /// Makes product purchase: Purchasable item can be Consumable, Non-Consumable etc
@@ -104,28 +102,31 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   /// *[productDetails]: Represent product user wants to buy
   ///
   /// Returns nothing
-  void purchaseProduct({required ProductDetails productDetails}) async {
+  void purchaseProduct({
+    required ProductDetails productDetails,
+    required String basePlanIdOrId,
+  }) async {
     emit(state.copyWith(message: null, purchaseInProgress: true));
 
     await _purchaseRepoImpl.purchaseProduct(
+      basePlanIdOrId: basePlanIdOrId,
       product: productDetails,
-      onError: (error) =>
-          emit(state.copyWith(message: error, purchaseInProgress: false)),
+      onError:
+          (error) =>
+              emit(state.copyWith(message: error, purchaseInProgress: false)),
     );
 
-    await Future<void>.delayed(const Duration(milliseconds: 500))
-        .then((void value) => emit(state.copyWith(purchaseInProgress: false)));
+    await Future<void>.delayed(
+      const Duration(milliseconds: 500),
+    ).then((void value) => emit(state.copyWith(purchaseInProgress: false)));
   }
 
   void initiateRestore() {
     emit(state.copyWith(purchaseInProgress: true));
     _purchaseRepoImpl.initiateRestore(
-      onError: (error) => emit(
-        state.copyWith(
-          purchaseInProgress: false,
-          message: error,
-        ),
-      ),
+      onError:
+          (error) =>
+              emit(state.copyWith(purchaseInProgress: false, message: error)),
     );
   }
 
