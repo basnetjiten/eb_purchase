@@ -320,8 +320,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   PurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId) {
     PurchaseDetails? oldPurchaseDetails;
 
-    print('PURCHASE ID ${_purchases.last.productID}::: ${basePlanIdOrId}');
+
     if (_purchases.isNotEmpty && _purchases.last.productID != basePlanIdOrId) {
+      print('PURCHASE ID ${_purchases.last.productID}::: ${basePlanIdOrId}');
       oldPurchaseDetails = _purchases.last;
     }
     return oldPurchaseDetails;
