@@ -321,6 +321,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     GooglePlayPurchaseDetails? oldPurchaseDetails;
 
     if (_purchases.isNotEmpty && _purchases.last.productID != basePlanIdOrId) {
+      print('Last purchase actual type: ${_purchases.last.runtimeType}');
       oldPurchaseDetails = _purchases.last as GooglePlayPurchaseDetails;
     }
     return oldPurchaseDetails;
