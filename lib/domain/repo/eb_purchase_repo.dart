@@ -59,7 +59,7 @@ abstract class EbPurchaseRepo {
   /// *[oldProductId] Previous Purchased product ID
   ///
   /// Returns GooglePlayPurchaseDetails
-  GooglePlayPurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId);
+  PurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId);
 
   /// Returns `true` if the payment platform is ready and available.
   Future<bool> get isStoreAvailable;

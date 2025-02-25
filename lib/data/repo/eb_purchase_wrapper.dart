@@ -288,7 +288,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     ReplacementMode? replacementMode,
   }) {
     if (Platform.isAndroid) {
-      final GooglePlayPurchaseDetails? oldSubscription = getOldPurchaseDetails(
+      final PurchaseDetails? oldSubscription = getOldPurchaseDetails(
         basePlanIdOrId,
       );
 
@@ -297,7 +297,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         changeSubscriptionParam:
             (oldSubscription != null)
                 ? ChangeSubscriptionParam(
-                  oldPurchaseDetails: oldSubscription,
+                  oldPurchaseDetails: (oldSubscription as GooglePlayPurchaseDetails),
                   replacementMode:
                       replacementMode ?? ReplacementMode.chargeFullPrice,
                 )
@@ -317,12 +317,11 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   ///
   /// Returns GooglePlayPurchaseDetails
   @override
-  GooglePlayPurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId) {
-    GooglePlayPurchaseDetails? oldPurchaseDetails;
+  PurchaseDetails? getOldPurchaseDetails(String basePlanIdOrId) {
+    PurchaseDetails? oldPurchaseDetails;
 
     if (_purchases.isNotEmpty && _purchases.last.productID != basePlanIdOrId) {
-      print('Last purchase actual type: ${_purchases.last.runtimeType}');
-      oldPurchaseDetails = _purchases.last as GooglePlayPurchaseDetails;
+      oldPurchaseDetails = _purchases.last;
     }
     return oldPurchaseDetails;
   }
