@@ -134,7 +134,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
 
   /// Makes product purchase: Purchasable item can be Consumable, Non-Consumable etc
   ///
-  /// *[productDetails]: Represent product user wants to buy
+  /// *[productDetails] Represent product user wants to buy
   ///
   /// Returns nothing
   void purchaseProduct(

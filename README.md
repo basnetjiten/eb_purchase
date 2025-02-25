@@ -1,195 +1,141 @@
-# Flutter Package: Google Play setup
+# eb_purchase
 
-This package integrates Google Play services for seamless in-app purchases and subscription management. Below are the detailed steps for setting up the integration.
+[![](../../static/logo.svg)](https://ebpearls.com.au/)
 
----
-
-## Setup
-
-**Note**: This process involves switching between **Google Play Console** and **Google Cloud Console**. Each step specifies the respective console to ensure smooth navigation.
+`eb_purchase` is a Flutter package that simplifies handling in-app purchases, subscription management, and restoring purchases. It provides an easy-to-use API for managing product configurations, fetching in-app products, purchasing, verifying, and restoring them.
 
 ---
 
-### 1. Enable the Google Developer and Reporting API
-**Where**: Google Cloud Console  
-Follow these steps to enable the required APIs:
+## Features
 
-1. Visit the [Google Play Android Developer API](https://console.developers.google.com/apis/library/androidpublisher.googleapis.com) and the [Google Play Developer Reporting API](https://console.developers.google.com/apis/library/playdeveloperreporting.googleapis.com) pages.
-2. Select or create a project.
-3. Click **Enable** for each API (it will show **Manage** once enabled).
-
-> **Note**: If prompted to create credentials, follow Step 2 to generate the required credentials.
-
----
-
-### 2. Create a Service Account
-**Where**: Google Cloud Console  
-Navigate to **IAM & Admin ➡️ Service Account** to create a service account.
-
-#### Steps:
-1. Click **Create Service Account**, provide a name, and click **Create and Continue**.
-2. Add the following **Roles**:
-    - **Pub/Sub Admin** (enables Platform Server Notifications)
-    - **Monitoring Viewer** (monitors the notification queue)
-3. Skip the optional step and click **Done**.
-
-#### Create and Download the JSON Key:
-1. In the **Service Accounts** section, locate your service account and select **Manage Keys** from the actions menu.
-2. Click **Add Key ➡️ Create New Key**, select **JSON**, and download the key.
-
-> **Constraints**: If your Google Cloud organization enforces constraints, navigate to **IAM & Admin ➡️ Organization Policies** and adjust settings as needed.
+- **Product Configuration**: Configure product IDs for in-app purchases and subscriptions.
+- **Fetch In-App Products**: Retrieve product details for available in-app products.
+- **Purchase Products**: Handle the purchase flow for selected products.
+- **Restore Purchases**: Restore previously completed purchases.
+- **Complete Purchases**: Finalize any pending purchase.
+- **Verify Purchases**: Prepares platform wise purchase model for server side verification .
+- **Real-Time Updates**: Listen for updates on purchase status using `purchaseStream`.
 
 ---
 
-### 3. Grant Financial Access
-**Where**: Google Play Console
+## Installation
+Add eb_purchase package to your pubspec.yaml file
+```yaml
+dependencies:
+  eb_purchase:
+    git:
+      url: git@bitbucket.org:ebpearls28/flutter_packages.git
+      path: packages/eb_purchase
+      ref: eb_purchase-v1.4.1 # replace with latest tag from releases
+```
 
-1. Navigate to **Users and Permissions** and invite the service account email created in Step 2.
-2. Under **Account Permissions**, assign:
-    - **View app information and download bulk reports (read-only)**
-    - **View financial data, orders, and cancellation survey responses**
-    - **Manage orders and subscriptions**
-3. Add your app under **App Permissions**.
-4. Send the invite and ensure the account is active.
+## HOW TO USE THIS PACKAGE?
 
----
+Follow the steps below to integrate and use the `eb_purchase` package in your Flutter project.
 
-### 4. Provide JSON Credentials to API
----
+### 1. Configure Your Product IDs
+Start by configuring the `productIds` for the in-app products or subscriptions you want to manage. Use the `configure` method to set up the product IDs and handle product details when they are fetched.
 
-### 5. Upload Signed APK/Android App Bundle
-**Where**: Google Play Console
+#### Example:
+```dart
+import 'package:flutter/material.dart';
 
-Ensure the following:
-- A signed APK or Android App Bundle is uploaded.
-- The release is in a **Closed** or **Open Testing Track**, with testers added.
-- Subscriptions are in an **Active** state.
+void main() {
+  /// Initialize the purchase repository
+  final EbPurchaseWrapper _purchaseWrapper = EbPurchaseWrapper.instance;
+  
+  /// configure the product IDs
+  _purchaseRepoImpl.configure(
+    productIds: <String>{
+      "monthlyProductId",
+      "yearlyProductId",
+    },
+    onDetailsFetched: onProductDetailsFetched,
+  );
+}
 
+```
+`onProductDetailsFetched`: A callback function that receives the list of products when their details are fetched. You can then use this data to display the product information or to proceed with the purchase.
+### 2. Fetch In-App Products
+Fetch details of in-app products or subscription plans using the `fetchInAppProducts` method. This step will help you get the list of available products from the store.
 
----
+#### Example:
+```dart
+void main() async {
+  /// 1. Initialize the purchase repository
+  ///  ...
+  /// 2. Configure the product IDs
+  /// ...
+  /// 3. Fetch in-app products
+  await _purchaseWrapper.fetchInAppProducts(
+    onProductFetched: (List<PurchasePlanModel> purchasePlans) {
+      // Handle fetched purchase plans here
+    },
+  );
+}
 
-## Troubleshooting
-
-### Confirm Checklist
-Use this checklist to validate your setup:
-1. APIs are enabled.
-2. The service account is **Enabled** in Google Cloud Console.
-3. Correct JSON credentials file is shared with API Devs
-4. Re-upload credentials if issues persist.
-
----
-
-### Common Errors and Solutions
-
-| **Error**                                  | **Cause**                                                  | **Solution**                                                                                      |
-|--------------------------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| Invalid Play Store credentials             | Incorrect setup                                            | Verify steps and re-upload the JSON credentials.                                                 |
-| No permissions for Google resources        | Missing roles                                              | Ensure **Pub/Sub Admin** and **Monitoring Viewer** roles are added.                              |
-| Pub/Sub API not enabled                    | API access not enabled                                     | Enable the Pub/Sub API in Google Cloud Console.                                                  |
-| Credentials JSON is invalid                | Incorrect JSON file                                        | Regenerate and re-upload the JSON file.                                                          |
-| Service account is disabled                | Account was disabled due to security risks                | Create new credentials and upload them.                                                          |
-| Account permissions are invalid            | Missing permissions in Google Play Console                | Assign required permissions: **View financial data**, **Manage orders and subscriptions**.       |
-
----
-
-## Additional Notes
-
-- **Validation Time**: Changes may take up to **36 hours** to reflect.
-- **Sandbox Testing**: Test with a sandbox user to ensure proper API connection.
-
-For further assistance, refer to the [Google Cloud Documentation](https://cloud.google.com/docs).
-
----
-
-
-# iOS Configuration: Apple App Store Integration
-
-This guide outlines the steps required to configure your app for the Apple App Store. Both the **App-Specific Shared Secret**, **In-App Purchase Key**, and **App Store Connect API Key** are essential for seamless subscription management, product import, and in-app purchase configuration.
-
----
-
-## Setup
-
-### 1. Generating an App-Specific Shared Secret
-
-Follow these steps to generate an **App-Specific Shared Secret** in App Store Connect:
-
-1. **Log in to App Store Connect**
-    - Visit [App Store Connect](https://appstoreconnect.apple.com/) and sign in with your Apple Developer credentials.
-
-2. **Navigate to Your App**
-    - From the dashboard, go to **"My Apps"** and select the app you want to configure.
-
-3. **Access the Shared Secret Section**
-    - In the left menu, under the **"General"** section, select **"App Information"**.
-    - On the right side, locate the **"App-Specific Shared Secret"** section and click **"Manage"**.
-
-4. **Generate and Copy the Shared Secret**
-    - Click **"Generate Shared Secret"** if no secret exists, or copy the existing shared secret.
-    - Save the shared secret securely; it will be required in the next step.
-
----
-
-### 2. Share your Shared Secret with API DEVS
+```
+`onProductFetched`: This callback receives a list of PurchasePlanModel objects containing details about available products. You can use this data to display the products to the user or to proceed with the purchase process.
 
 
+### 3. Purchase a Product
+Initiate the purchase flow for a selected product using the `purchaseProduct`method. This method handles the purchase transaction and ensures the product is purchased successfully.
+#### Example:
+```dart
+void main() async {
+  /// 1. Initialize the purchase repository
+  ///  ...
+  /// 2. Configure the product IDs
+  /// ...
+  /// 3. Fetch in-app products
+  /// ...
+  /// 4. Purchase a product
+  await _purchaseWrapper.buyProduct(
+      purchaseParam: PurchaseParam(),
+      onError: (error) {}
+  );
+}
+```
+`productDetails`: The details of the product to be purchased.
 
----
+`onError`: Use the onError callback to handle any errors that occur during the purchase process. This callback provides an error message that you can display to the user.
 
-## In-App Purchase Key Configuration
+### 4. Restore Purchases
+Use the `initiateRestore` method to restore previously purchased products or subscriptions. This method allows users to recover any past purchases, which is particularly useful when they reinstall the app or switch devices.
+```dart
+void restorePurchases() async {
+  _purchaseWrapper.restorePurchases(
+    onError: (error) {},
+  );
+}
+```
+`onError`: The onError callback is triggered if there is an issue during the restore process. You can use this to handle any errors, such as when no previous purchases are found.
 
-When setting up a new App Store app , you will need to add an **In-App Purchase Key**. This configuration step is required to provide accurate country, currency, and pricing information, and enable features like subscription offers and Order ID lookups.
-
-⚠️ **Important Notes:**
-- Adding an in-app purchase key to an app with existing transactions may **change historic data**, as previously estimated data will be corrected with Apple-provided data.
-- Subscriptions are a type of in-app purchase, and the in-app purchase key is required for all in-app purchase types, including consumables, non-consumables, and subscriptions.
-
----
-
-### Setup
-
-#### 1. Generating an In-App Purchase Key
-
-1. **Navigate to In-App Purchase Settings**
-    - In App Store Connect, go to **Users and Access → Integrations → In-App Purchase**.
-
-2. **Generate or Access the Key**
-    - Click **Generate In-App Purchase Key**, or if a key already exists, click the **"+"** symbol next to the **Active** header.
-    - Enter a name for the key and confirm.
-
-3. **Download the Key**
-    - Once generated, the key will appear under **Active Keys**.
-    - Download the **.p8 key file** and store it securely.
-
----
-
-#### 2. Share the In-App Purchase Key with API Devs
+### 5. Complete a Purchase
+Use the `completePurchase` method to finalize the transaction. This ensures that the purchase is successfully completed and recorded in the system.
+```dart
+void completePurchase() async {
+  await _purchaseWrapper.completePurchase(
+    purchaseModel: purchaseModel,
+    onError: (error) {},
+  );
+}
+```
+`onError`: Use the onError callback to handle any errors that occur during the completion of the purchase. You can display appropriate error messages or take other necessary actions based on the error.
 
 
-#### 3. Providing the Issuer ID
 
-1. **Locate the Issuer ID**
-    - In App Store Connect, navigate to **Users and Access → Integrations → In-App Purchase**.
-    - The Issuer ID is displayed at the top of the page.
+### 6. Servers side verification
+Use the `createPlatformSpecificPlan` method to verify the purchased plan. It creates an Android or IOS purchase plan for the verification.
+```dart  
+void verifyPurchase() async {
+  final PurchasePlanModel purchasePlanModel = await _purchaseWrapper.createPlatformSpecificPlan(
+    purchaseModel: purchaseModel,
+  );
+}
+```
+`purchasedProduct`: Product purchased by the app user
 
-   📘 **Note:** If the Issuer ID is missing, create an **App Store Connect API key** to generate the Issuer ID.
+## Example code
 
-
----
-
-## App Store Connect API Key Configuration
-
-
-### Setup
-
-#### 1. Creating an App Store Connect API Key
-
-1. **Navigate to App Store Connect**
-    - In App Store Connect, go to **Users and Access → Integrations → App Store Connect API**.
-
-2. **Create a New API Key**
-    - Click **Create API Key** and set the access level to **App Manager** or higher.
-    - After creation, download the API key **.p8** file and take note of the **Issuer ID** (located above the "Active" table).
-
-   📘 **Important Note:** This key can only be downloaded once. Ensure it is stored safely.
-
+Please refer the example folder to use this package in your Flutter project.

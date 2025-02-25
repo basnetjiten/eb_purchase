@@ -2,12 +2,13 @@ name: example
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+#publish_to: 'homepage' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
+publish_to: none
 
 environment:
-  sdk: ^3.5.3
+  sdk: 3.7.0
 
 dependencies:
   flutter:
@@ -21,36 +22,40 @@ dependencies:
 
   eb_purchase:
     path: ../
+  in_app_purchase: ^3.2.1
 
-  #Billing
-  in_app_purchase: 3.2.0
-  in_app_purchase_android: 0.3.6+12
+  collection: ^1.19.1
+
+  #Device Information
+  device_info_plus: ^11.2.1
+  package_info_plus: ^8.1.3
+
+  dartz:
 
   #dependency injection
-  get_it: 7.7.0
-  injectable: 2.4.2
-
+  get_it: ^8.0.3
+  injectable: ^2.5.0
 
   #data models
-  freezed_annotation: 2.4.4
-  json_annotation: 4.9.0
-  equatable: 2.0.5
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  equatable: ^2.0.7
 
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
   #generators
-  build_runner: 2.4.12
+  build_runner: ^2.4.14
+
+  json_serializable: ^6.9.3
+  freezed: ^2.5.8
+  injectable_generator: ^2.7.0
 
 
-  json_serializable: 6.8.0
-  freezed: 2.5.2
-  hive_generator: 2.0.1
-  injectable_generator: 2.6.1
 
 
 flutter:
