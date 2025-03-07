@@ -168,9 +168,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
               for (int i = 0; i < offerDetails.length; i++) {
                 final offer =
                     product.productDetails.subscriptionOfferDetails![i];
-                print("OFFER IDS ${offer.offerId}");
-                print("BASE PLAN ID ${offer.basePlanId}");
-                print("Actual PLAN ID ${actualProduct.basePlanId}");
+
                 if (offer.basePlanId == actualProduct.basePlanId &&
                     offer.offerId != null) {
                   final parentOffer = products.firstWhereOrNull(
