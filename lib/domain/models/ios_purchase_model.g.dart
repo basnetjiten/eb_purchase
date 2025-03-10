@@ -11,7 +11,7 @@ _$IosPurchaseModelImpl _$$IosPurchaseModelImplFromJson(
 ) => _$IosPurchaseModelImpl(
   currencySymbol: json['currencySymbol'] as String?,
   receipt: json['receipt'] as String,
-  price: json['price'] as String?,
+  price: (json['price'] as num?)?.toDouble(),
   metaData: json['metaData'] as Map<String, dynamic>?,
 );
 

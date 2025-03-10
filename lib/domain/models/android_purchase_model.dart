@@ -14,7 +14,7 @@ class AndroidPurchaseModel extends BasePurchaseModel with _$AndroidPurchaseModel
   const factory AndroidPurchaseModel({
     required AndroidData data,
     String? currencySymbol,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   }) = _AndroidPurchaseModel;
 

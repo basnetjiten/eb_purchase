@@ -11,7 +11,7 @@ _$AndroidPurchaseModelImpl _$$AndroidPurchaseModelImplFromJson(
 ) => _$AndroidPurchaseModelImpl(
   data: AndroidData.fromJson(json['data'] as Map<String, dynamic>),
   currencySymbol: json['currencySymbol'] as String?,
-  price: json['price'] as String?,
+  price: (json['price'] as num?)?.toDouble(),
   metaData: json['metaData'] as Map<String, dynamic>?,
 );
 

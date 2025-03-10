@@ -416,7 +416,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   Future<BasePurchaseModel> createPlatformSpecificPlan({
     required PurchaseDetails purchasedProduct,
     String? currencySymbol,
-    String? price,
+    double? price,
     Map<String,dynamic>? metaData
   }) async {
     final String packageName = await _deviceInfoService.packageName;

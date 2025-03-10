@@ -23,7 +23,7 @@ AndroidPurchaseModel _$AndroidPurchaseModelFromJson(Map<String, dynamic> json) {
 mixin _$AndroidPurchaseModel {
   AndroidData get data => throw _privateConstructorUsedError;
   String? get currencySymbol => throw _privateConstructorUsedError;
-  String? get price => throw _privateConstructorUsedError;
+  double? get price => throw _privateConstructorUsedError;
   Map<String, dynamic>? get metaData => throw _privateConstructorUsedError;
 
   /// Serializes this AndroidPurchaseModel to a JSON map.
@@ -46,7 +46,7 @@ abstract class $AndroidPurchaseModelCopyWith<$Res> {
   $Res call({
     AndroidData data,
     String? currencySymbol,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   });
 
@@ -92,7 +92,7 @@ class _$AndroidPurchaseModelCopyWithImpl<
                 freezed == price
                     ? _value.price
                     : price // ignore: cast_nullable_to_non_nullable
-                        as String?,
+                        as double?,
             metaData:
                 freezed == metaData
                     ? _value.metaData
@@ -126,7 +126,7 @@ abstract class _$$AndroidPurchaseModelImplCopyWith<$Res>
   $Res call({
     AndroidData data,
     String? currencySymbol,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   });
 
@@ -169,7 +169,7 @@ class __$$AndroidPurchaseModelImplCopyWithImpl<$Res>
             freezed == price
                 ? _value.price
                 : price // ignore: cast_nullable_to_non_nullable
-                    as String?,
+                    as double?,
         metaData:
             freezed == metaData
                 ? _value._metaData
@@ -198,7 +198,7 @@ class _$AndroidPurchaseModelImpl implements _AndroidPurchaseModel {
   @override
   final String? currencySymbol;
   @override
-  final String? price;
+  final double? price;
   final Map<String, dynamic>? _metaData;
   @override
   Map<String, dynamic>? get metaData {
@@ -258,7 +258,7 @@ abstract class _AndroidPurchaseModel implements AndroidPurchaseModel {
   const factory _AndroidPurchaseModel({
     required final AndroidData data,
     final String? currencySymbol,
-    final String? price,
+    final double? price,
     final Map<String, dynamic>? metaData,
   }) = _$AndroidPurchaseModelImpl;
 
@@ -270,7 +270,7 @@ abstract class _AndroidPurchaseModel implements AndroidPurchaseModel {
   @override
   String? get currencySymbol;
   @override
-  String? get price;
+  double? get price;
   @override
   Map<String, dynamic>? get metaData;
 

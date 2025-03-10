@@ -10,6 +10,7 @@ abstract class EbVerifyPurchaseRepo {
   Future<BasePurchaseModel> createPlatformSpecificPlan({
     required PurchaseDetails purchasedProduct,
     String? currencySymbol,
-    String? price,
+    double? price,
+    Map<String,dynamic>? metaData,
   });
 }

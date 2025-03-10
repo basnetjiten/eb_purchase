@@ -23,7 +23,7 @@ IosPurchaseModel _$IosPurchaseModelFromJson(Map<String, dynamic> json) {
 mixin _$IosPurchaseModel {
   String? get currencySymbol => throw _privateConstructorUsedError;
   String get receipt => throw _privateConstructorUsedError;
-  String? get price => throw _privateConstructorUsedError;
+  double? get price => throw _privateConstructorUsedError;
   Map<String, dynamic>? get metaData => throw _privateConstructorUsedError;
 
   /// Serializes this IosPurchaseModel to a JSON map.
@@ -46,7 +46,7 @@ abstract class $IosPurchaseModelCopyWith<$Res> {
   $Res call({
     String? currencySymbol,
     String receipt,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   });
 }
@@ -87,7 +87,7 @@ class _$IosPurchaseModelCopyWithImpl<$Res, $Val extends IosPurchaseModel>
                 freezed == price
                     ? _value.price
                     : price // ignore: cast_nullable_to_non_nullable
-                        as String?,
+                        as double?,
             metaData:
                 freezed == metaData
                     ? _value.metaData
@@ -111,7 +111,7 @@ abstract class _$$IosPurchaseModelImplCopyWith<$Res>
   $Res call({
     String? currencySymbol,
     String receipt,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   });
 }
@@ -151,7 +151,7 @@ class __$$IosPurchaseModelImplCopyWithImpl<$Res>
             freezed == price
                 ? _value.price
                 : price // ignore: cast_nullable_to_non_nullable
-                    as String?,
+                    as double?,
         metaData:
             freezed == metaData
                 ? _value._metaData
@@ -180,7 +180,7 @@ class _$IosPurchaseModelImpl implements _IosPurchaseModel {
   @override
   final String receipt;
   @override
-  final String? price;
+  final double? price;
   final Map<String, dynamic>? _metaData;
   @override
   Map<String, dynamic>? get metaData {
@@ -239,7 +239,7 @@ abstract class _IosPurchaseModel implements IosPurchaseModel {
   const factory _IosPurchaseModel({
     final String? currencySymbol,
     required final String receipt,
-    final String? price,
+    final double? price,
     final Map<String, dynamic>? metaData,
   }) = _$IosPurchaseModelImpl;
 
@@ -251,7 +251,7 @@ abstract class _IosPurchaseModel implements IosPurchaseModel {
   @override
   String get receipt;
   @override
-  String? get price;
+  double? get price;
   @override
   Map<String, dynamic>? get metaData;
 

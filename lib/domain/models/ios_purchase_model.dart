@@ -14,7 +14,7 @@ class IosPurchaseModel extends BasePurchaseModel with _$IosPurchaseModel {
   const factory IosPurchaseModel({
     String? currencySymbol,
     required String receipt,
-    String? price,
+    double? price,
     Map<String, dynamic>? metaData,
   }) = _IosPurchaseModel;
 
