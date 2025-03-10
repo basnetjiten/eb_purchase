@@ -417,6 +417,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     required PurchaseDetails purchasedProduct,
     String? currencySymbol,
     String? price,
+    Map<String,dynamic>? metaData
   }) async {
     final String packageName = await _deviceInfoService.packageName;
 
@@ -425,6 +426,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         currencySymbol: currencySymbol,
         price: price,
         receipt: purchasedProduct.verificationData.serverVerificationData,
+        metaData: metaData
       );
     }
     return AndroidPurchaseModel(
