@@ -6,8 +6,9 @@ class SubscriptionPlanModel {
     required this.title,
     required this.basePlanId,
     required this.price,
+    required this.rawPrice,
     required this.currencySymbol,
-    this.offerPrice,
+    this.offerPrice = 0.0,
     this.hasDiscount = false,
     this.googlePlayOffers,
     this.appStoreOffers,
@@ -16,7 +17,8 @@ class SubscriptionPlanModel {
   final String basePlanId;
   final String price;
   final String title;
-  final String? offerPrice;
+  final double offerPrice;
+  final double rawPrice;
   final String currencySymbol;
   final bool hasDiscount;
   final List<GooglePlayOffer>? googlePlayOffers;

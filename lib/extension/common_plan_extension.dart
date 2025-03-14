@@ -17,35 +17,38 @@ extension SubscriptionPlanExtension on SubscriptionPlan {
       basePlanId: plan.id,
       appStoreOffers: plan.offers,
       price: plan.price,
+      rawPrice: plan.rawPrice,
       currencySymbol: plan.currencySymbol,
-      offerPrice: offerPrice,
+      offerPrice: _updatedOfferPrice(offerPrice),
       hasDiscount: offerPrice != null,
     );
   }
+
+  double _updatedOfferPrice(String? offerPrice) =>
+      double.tryParse(offerPrice ?? '0.0') ?? 0.0;
 
   SubscriptionPlanModel _fromGooglePlayPlan(
     GooglePlaySubscriptionPlan plan,
     String? offerId,
   ) {
-    final double? offerPrice = _getOfferPrice(plan, offerId);
+    final double offerPrice = _getOfferPrice(plan, offerId);
     return SubscriptionPlanModel(
       title: plan.basePlanId,
       basePlanId: plan.basePlanId,
       googlePlayOffers: plan.offers,
       price: plan.price,
+      rawPrice: plan.rawPrice,
       currencySymbol: plan.currencySymbol,
-      offerPrice: offerPrice?.toString(),
-      hasDiscount: offerPrice != null,
+      offerPrice: offerPrice,
     );
   }
 
-  double? _getOfferPrice(GooglePlaySubscriptionPlan plan, String? id) {
+  double _getOfferPrice(GooglePlaySubscriptionPlan plan, String? id) {
     for (final offer in plan.offers) {
       if (offer.offerId == id && offer.pricingPhases.isNotEmpty) {
         return offer.pricingPhases.first.priceAmountMicros.toDouble() / 1000000;
       }
     }
-    return null;
-
+    return 0.0;
   }
 }

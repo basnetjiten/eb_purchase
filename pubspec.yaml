@@ -29,7 +29,7 @@ dependencies:
   injectable: ^2.5.0
 
   collection: ^1.19.0 # flutter sdk depends on version  1.19.0
-  pigeon: ^24.2.1
+  pigeon: ^24.2.2
 
 
 dev_dependencies:

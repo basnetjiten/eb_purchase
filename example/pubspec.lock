@@ -555,10 +555,10 @@ packages:
     dependency: transitive
     description:
       name: pigeon
-      sha256: "1bab69b62617e5f31cf84dcab82c62aa21b7883055f0ca7ff93e76651eef8575"
+      sha256: "286b64a30967eac2edc4ca292132fb662b460dd57d085fef5436ed02dd7721e7"
       url: "https://pub.dev"
     source: hosted
-    version: "24.2.1"
+    version: "24.2.2"
   plugin_platform_interface:
     dependency: transitive
     description:
