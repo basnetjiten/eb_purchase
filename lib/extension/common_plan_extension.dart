@@ -2,6 +2,7 @@ import 'package:eb_purchase/domain/models/common_sub_plan_model.dart';
 import 'package:eb_purchase/domain/models/subscriptions/subscription_plan.dart';
 
 extension SubscriptionPlanExtension on SubscriptionPlan {
+
   SubscriptionPlanModel toCommonPlan({String? offerId}) {
     return this is AppStoreSubscriptionPlan
         ? _fromAppStorePlan(this as AppStoreSubscriptionPlan)

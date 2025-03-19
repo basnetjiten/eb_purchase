@@ -350,7 +350,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     OnError? onError,
   }) async {
     try {
-      await _clearIOSPendingPurchases();
+      await clearIOSPendingPurchases();
       return _iAPService.completePurchase(purchaseDetail);
     } on InAppPurchaseException catch (x) {
       log('CompletePurchaseException(${x.code}, ${x.message}, ${x.source})');
@@ -383,7 +383,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }
 
   /// Clears pending purchases on iOS.
-  Future<void> _clearIOSPendingPurchases() async {
+  Future<void> clearIOSPendingPurchases() async {
     if (Platform.isIOS) {
       final SKPaymentQueueWrapper skPaymentQueueWrapper =
           SKPaymentQueueWrapper();
