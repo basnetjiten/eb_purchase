@@ -387,6 +387,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     if (Platform.isIOS) {
       final SKPaymentQueueWrapper skPaymentQueueWrapper =
           SKPaymentQueueWrapper();
+
       try {
         final List<SKPaymentTransactionWrapper> transactions =
             await skPaymentQueueWrapper.transactions();

@@ -8,7 +8,7 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: 3.7.0
+  sdk: ">=3.8.0 <=4.0.0"
 
 dependencies:
   flutter:
@@ -37,7 +37,7 @@ dependencies:
   injectable: ^2.5.0
 
   #data models
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   equatable: ^2.0.7
 
@@ -49,10 +49,10 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
   #generators
-  build_runner: ^2.4.14
+  build_runner: ^2.7.1
 
-  json_serializable: ^6.9.3
-  freezed: ^2.5.8
+  json_serializable: ^6.11.0
+  freezed: ^3.2.0
   injectable_generator: ^2.7.0
 
 
