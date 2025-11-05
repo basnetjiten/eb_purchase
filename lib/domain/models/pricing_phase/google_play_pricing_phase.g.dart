@@ -6,9 +6,9 @@ part of 'google_play_pricing_phase.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$GooglePlayPricingPhaseImpl _$$GooglePlayPricingPhaseImplFromJson(
+_GooglePlayPricingPhase _$GooglePlayPricingPhaseFromJson(
   Map<String, dynamic> json,
-) => _$GooglePlayPricingPhaseImpl(
+) => _GooglePlayPricingPhase(
   billingCycleCount: (json['billingCycleCount'] as num).toInt(),
   billingPeriod: json['billingPeriod'] as String,
   formattedPrice: json['formattedPrice'] as String,
@@ -20,8 +20,8 @@ _$GooglePlayPricingPhaseImpl _$$GooglePlayPricingPhaseImplFromJson(
   ),
 );
 
-Map<String, dynamic> _$$GooglePlayPricingPhaseImplToJson(
-  _$GooglePlayPricingPhaseImpl instance,
+Map<String, dynamic> _$GooglePlayPricingPhaseToJson(
+  _GooglePlayPricingPhase instance,
 ) => <String, dynamic>{
   'billingCycleCount': instance.billingCycleCount,
   'billingPeriod': instance.billingPeriod,

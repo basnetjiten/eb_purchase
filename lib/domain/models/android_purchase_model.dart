@@ -3,32 +3,37 @@
 * @Company: EB Pearls
 */
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'base_purchase_model.dart';
 
 part 'android_purchase_model.freezed.dart';
-
 part 'android_purchase_model.g.dart';
 
 @freezed
-class AndroidPurchaseModel extends BasePurchaseModel with _$AndroidPurchaseModel {
-  const factory AndroidPurchaseModel({
+abstract class AndroidPurchaseModel extends BasePurchaseModel
+    with _$AndroidPurchaseModel {
+  AndroidPurchaseModel._();
+
+  factory AndroidPurchaseModel({
     required AndroidData data,
     String? currencySymbol,
     double? price,
     Map<String, dynamic>? metaData,
   }) = _AndroidPurchaseModel;
 
-  factory AndroidPurchaseModel.fromJson(Map<String, dynamic> json) => _$AndroidPurchaseModelFromJson(json);
+  factory AndroidPurchaseModel.fromJson(Map<String, dynamic> json) =>
+      _$AndroidPurchaseModelFromJson(json);
 }
 
 @freezed
-class AndroidData with _$AndroidData {
-  const factory AndroidData({
+abstract class AndroidData with _$AndroidData {
+  factory AndroidData({
     required String packageName,
     required String subscriptionId,
     required String token,
     String? signature,
   }) = _AndroidData;
 
-  factory AndroidData.fromJson(Map<String, dynamic> json) => _$AndroidDataFromJson(json);
+  factory AndroidData.fromJson(Map<String, dynamic> json) =>
+      _$AndroidDataFromJson(json);
 }

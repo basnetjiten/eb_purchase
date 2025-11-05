@@ -4,19 +4,24 @@
 */
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'base_purchase_model.dart';
-part 'ios_purchase_model.freezed.dart';
 
+import 'base_purchase_model.dart';
+
+part 'ios_purchase_model.freezed.dart';
 part 'ios_purchase_model.g.dart';
 
 @freezed
-class IosPurchaseModel extends BasePurchaseModel with _$IosPurchaseModel {
-  const factory IosPurchaseModel({
+abstract class IosPurchaseModel extends BasePurchaseModel
+    with _$IosPurchaseModel {
+  IosPurchaseModel._();
+
+  factory IosPurchaseModel({
     String? currencySymbol,
     required String receipt,
     double? price,
     Map<String, dynamic>? metaData,
   }) = _IosPurchaseModel;
 
-  factory IosPurchaseModel.fromJson(Map<String, dynamic> json) => _$IosPurchaseModelFromJson(json);
+  factory IosPurchaseModel.fromJson(Map<String, dynamic> json) =>
+      _$IosPurchaseModelFromJson(json);
 }

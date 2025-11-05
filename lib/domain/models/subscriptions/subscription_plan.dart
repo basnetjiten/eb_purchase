@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'subscription_plan.freezed.dart';
 
 @freezed
-class SubscriptionPlan with _$SubscriptionPlan {
+abstract class SubscriptionPlan with _$SubscriptionPlan {
   const SubscriptionPlan._();
 
   /// Represents a unified subscription plan.

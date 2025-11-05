@@ -6,8 +6,8 @@ part of 'appstore_offer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppstoreOfferImpl _$$AppstoreOfferImplFromJson(Map<String, dynamic> json) =>
-    _$AppstoreOfferImpl(
+_AppstoreOffer _$AppstoreOfferFromJson(Map<String, dynamic> json) =>
+    _AppstoreOffer(
       identifier: json['identifier'] as String?,
       numberOfPeriods: (json['numberOfPeriods'] as num).toInt(),
       price: json['price'] as String,
@@ -20,7 +20,7 @@ _$AppstoreOfferImpl _$$AppstoreOfferImplFromJson(Map<String, dynamic> json) =>
       subscriptionPeriodUnit: json['subscriptionPeriodUnit'] as String,
     );
 
-Map<String, dynamic> _$$AppstoreOfferImplToJson(_$AppstoreOfferImpl instance) =>
+Map<String, dynamic> _$AppstoreOfferToJson(_AppstoreOffer instance) =>
     <String, dynamic>{
       'identifier': instance.identifier,
       'numberOfPeriods': instance.numberOfPeriods,

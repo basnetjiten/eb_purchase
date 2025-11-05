@@ -5,7 +5,7 @@ part 'appstore_offer.freezed.dart';
 part 'appstore_offer.g.dart';
 
 @Freezed(map: FreezedMapOptions.none, when: FreezedWhenOptions.none)
-class AppstoreOffer with _$AppstoreOffer {
+abstract class AppstoreOffer with _$AppstoreOffer {
   const AppstoreOffer._();
 
   const factory AppstoreOffer({
@@ -23,11 +23,10 @@ class AppstoreOffer with _$AppstoreOffer {
     required String subscriptionPeriodUnit,
   }) = _AppstoreOffer;
 
-  factory AppstoreOffer.fromJson(Map<String, dynamic> json) => _$AppstoreOfferFromJson(json);
+  factory AppstoreOffer.fromJson(Map<String, dynamic> json) =>
+      _$AppstoreOfferFromJson(json);
 
-  factory AppstoreOffer.fromSkuDetails(
-    SKProductDiscountWrapper skuDetails,
-  ) {
+  factory AppstoreOffer.fromSkuDetails(SKProductDiscountWrapper skuDetails) {
     return AppstoreOffer(
       identifier: skuDetails.identifier,
       numberOfPeriods: skuDetails.numberOfPeriods,

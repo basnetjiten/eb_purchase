@@ -5,7 +5,7 @@ part 'google_play_pricing_phase.freezed.dart';
 part 'google_play_pricing_phase.g.dart';
 
 @Freezed(map: FreezedMapOptions.none, when: FreezedWhenOptions.none)
-class GooglePlayPricingPhase with _$GooglePlayPricingPhase {
+abstract class GooglePlayPricingPhase with _$GooglePlayPricingPhase {
   const GooglePlayPricingPhase._();
 
   const factory GooglePlayPricingPhase({
@@ -31,11 +31,10 @@ class GooglePlayPricingPhase with _$GooglePlayPricingPhase {
     required GooglePlayRecurrenceMode recurrenceMode,
   }) = _GooglePlayPricingPhase;
 
-  factory GooglePlayPricingPhase.fromJson(Map<String, dynamic> json) => _$GooglePlayPricingPhaseFromJson(json);
+  factory GooglePlayPricingPhase.fromJson(Map<String, dynamic> json) =>
+      _$GooglePlayPricingPhaseFromJson(json);
 
-  factory GooglePlayPricingPhase.fromPricingPhase(
-    PricingPhaseWrapper wrapper,
-  ) {
+  factory GooglePlayPricingPhase.fromPricingPhase(PricingPhaseWrapper wrapper) {
     return GooglePlayPricingPhase(
       billingCycleCount: wrapper.billingCycleCount,
       billingPeriod: wrapper.billingPeriod,
