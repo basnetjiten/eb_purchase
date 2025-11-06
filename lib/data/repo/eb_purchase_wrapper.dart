@@ -371,6 +371,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     OnError? onError,
   }) async {
     try {
+      await InAppPurchaseStoreKitPlatform.enableStoreKit1();
       return _iAPService.restorePurchases(
         applicationUserName: applicationUserName,
       );
