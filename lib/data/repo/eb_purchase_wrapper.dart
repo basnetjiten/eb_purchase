@@ -21,28 +21,15 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   static EbPurchaseWrapper? _instance;
 
   EbPurchaseWrapper._() {
+    _iAPService = InAppPurchase.instance;
     _deviceInfoService = DeviceInfoService.instance;
     _initStoreKit();
-  }
-
-  EbPurchaseWrapper() {
-    _initStoreKit(); // call early
   }
 
   Future<void> _initStoreKit() async {
     if (Platform.isIOS) {
       // enable StoreKit 1 before instance registration
       await InAppPurchaseStoreKitPlatform.enableStoreKit1();
-
-      // now it’s safe to grab the instance
-      _iAPService = InAppPurchase.instance;
-
-      final platform = _iAPService
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-
-      platform.setDelegate(EbPaymentQueueDelegate());
-    } else {
-      _iAPService = InAppPurchase.instance;
     }
   }
 
