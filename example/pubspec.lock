@@ -363,10 +363,10 @@ packages:
     dependency: "direct main"
     description:
       name: in_app_purchase
-      sha256: "50004f9e4392deabc7e2585587c38aed4d08d782869cb31c610b657c9a43207b"
+      sha256: "5cddd7f463f3bddb1d37a72b95066e840d5822d66291331d7f8f05ce32c24b6c"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.2"
+    version: "3.2.3"
   in_app_purchase_android:
     dependency: transitive
     description:
@@ -387,10 +387,10 @@ packages:
     dependency: transitive
     description:
       name: in_app_purchase_storekit
-      sha256: "6ce1361278cacc0481508989ba419b2c9f46a2b0dc54b3fe54f5ee63c2718fef"
+      sha256: bfdb8d1859b6d19a55aba1046e3a860c631b6e96d36275a358e1caf8b62cfbde
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.22+1"
+    version: "0.4.6+1"
   injectable:
     dependency: "direct main"
     description:
@@ -547,10 +547,10 @@ packages:
     dependency: transitive
     description:
       name: pigeon
-      sha256: "286b64a30967eac2edc4ca292132fb662b460dd57d085fef5436ed02dd7721e7"
+      sha256: "353aa2a9bacd0b9a3c9fe9a7ea044a01b4119198aa3f8756add06a05900d6e70"
       url: "https://pub.dev"
     source: hosted
-    version: "24.2.2"
+    version: "26.0.3"
   plugin_platform_interface:
     dependency: transitive
     description:
