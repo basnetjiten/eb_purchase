@@ -19,40 +19,68 @@ import '../../domain/domain.dart';
 /// Helper class for managing in-app purchases in Flutter applications.
 class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   static EbPurchaseWrapper? _instance;
+  static bool _storeKitConfigured = false;
 
-  EbPurchaseWrapper._() {
-    _iAPService = InAppPurchase.instance;
-    _deviceInfoService = DeviceInfoService.instance;
-    _initStoreKit();
-  }
+  // Private constructor - no initialization here
+  EbPurchaseWrapper._();
 
-  Future<void> _initStoreKit() async {
-    if (Platform.isIOS) {
-      // enable StoreKit 1 before instance registration
-      await InAppPurchaseStoreKitPlatform.enableStoreKit1();
-    }
-  }
-
-  /// The instance of the [EbPurchaseRepoImpl] to use.
+  /// The instance of the [EbPurchaseWrapper] to use.
   static EbPurchaseWrapper get instance => _getOrCreateInstance();
 
   static EbPurchaseWrapper _getOrCreateInstance() {
-    if (_instance != null) {
-      return _instance!;
-    }
-    return _instance = EbPurchaseWrapper._();
+    return _instance ??= EbPurchaseWrapper._();
   }
 
-  late final InAppPurchase _iAPService;
-  late final DeviceInfoService _deviceInfoService;
+  // Lazy initialization - null until first use
+  InAppPurchase? _iAPService;
+  final DeviceInfoService _deviceInfoService = DeviceInfoService.instance;
 
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   final Set<String> _productIds = {};
   final Set<PurchaseDetails> _purchases = {};
 
+  /// Configure StoreKit BEFORE InAppPurchase.instance is accessed
+  /// This is called automatically on first use
+  static Future<void> _configureStoreKit() async {
+    if (_storeKitConfigured) return;
+
+    if (Platform.isIOS) {
+      try {
+        // Enable StoreKit1 BEFORE accessing InAppPurchase.instance
+        await InAppPurchaseStoreKitPlatform.enableStoreKit1();
+        if (kDebugMode) {
+          log('StoreKit1 enabled successfully');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          log('Failed to enable StoreKit1: $e');
+        }
+      }
+    }
+
+    _storeKitConfigured = true;
+  }
+
+  /// Get IAP service with proper StoreKit initialization
+  Future<InAppPurchase> get _getIAPService async {
+    if (_iAPService == null) {
+      // CRITICAL: Configure StoreKit BEFORE accessing InAppPurchase.instance
+      await _configureStoreKit();
+      _iAPService = InAppPurchase.instance;
+    }
+    return _iAPService!;
+  }
+
+  /// Optional: Allow manual initialization if needed
+  /// Call this in main() if you want to ensure StoreKit1 is configured early
+  @Deprecated('Please note that StoreKit 1 will be removed in the future.')
+  static Future<void> initializeStoreKit1() async {
+    await _configureStoreKit();
+  }
+
   /// Configures the in-app purchase system.
-  /// IMPORTANT! You must subscribe to this stream as soon as your app launches,
+  /// IMPORTANT! You must subscribe to this stream as soon as your app launches.
   ///
   /// Retrieves product details and sets up purchase handling.
   ///
@@ -64,16 +92,17 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     required Set<String> productIds,
     required OnPurchaseDetailsReceived onDetailsFetched,
     Function(dynamic error)? onError,
-  }) {
+  }) async {
     if (Platform.isIOS) {
-      final platform = _iAPService
+      _iAPService = await _getIAPService;
+      final platform = _iAPService!
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       platform.setDelegate(EbPaymentQueueDelegate());
     }
 
     _productIds.addAll(productIds);
 
-    _subscription = _iAPService.purchaseStream.listen(
+    _subscription = _iAPService!.purchaseStream.listen(
       (purchaseDetails) {
         onDetailsFetched(purchaseDetails);
         _purchases.addAll(purchaseDetails);
@@ -98,7 +127,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     required OnProductFetched onProductFetched,
     OnError? onError,
   }) async {
-    final bool isAvailable = await _iAPService.isAvailable();
+    final bool isAvailable = await _iAPService!.isAvailable();
 
     List<SubscriptionPlan> purchasePlans = [];
 
@@ -106,7 +135,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
       return onError?.call('Unable to fetch subscriptions');
     }
 
-    final ProductDetailsResponse productDetailResponse = await _iAPService
+    final ProductDetailsResponse productDetailResponse = await _iAPService!
         .queryProductDetails(_productIds);
 
     if (productDetailResponse.error != null ||
@@ -259,12 +288,12 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }) async {
     try {
       if (consumable) {
-        return _iAPService.buyConsumable(
+        return _iAPService!.buyConsumable(
           purchaseParam: purchaseParam,
           autoConsume: autoConsume,
         );
       } else {
-        return _iAPService.buyNonConsumable(purchaseParam: purchaseParam);
+        return _iAPService!.buyNonConsumable(purchaseParam: purchaseParam);
       }
     } on InAppPurchaseException catch (x) {
       log('PurchaseException(${x.code}, ${x.message}, ${x.source})');
@@ -352,7 +381,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }) async {
     try {
       await clearIOSPendingPurchases();
-      return _iAPService.completePurchase(purchaseDetail);
+      return _iAPService!.completePurchase(purchaseDetail);
     } on InAppPurchaseException catch (x) {
       log('CompletePurchaseException(${x.code}, ${x.message}, ${x.source})');
       onError?.call(x.message.toString());
@@ -363,7 +392,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }
 
   @override
-  Future<bool> get isStoreAvailable async => await _iAPService.isAvailable();
+  Future<bool> get isStoreAvailable async => await _iAPService!.isAvailable();
 
   @override
   Future<void> restorePurchases({
@@ -371,11 +400,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     OnError? onError,
   }) async {
     try {
-      await InAppPurchaseStoreKitPlatform.enableStoreKit1().then((data) {
-        return _iAPService.restorePurchases(
-          applicationUserName: applicationUserName,
-        );
-      });
+      return _iAPService!.restorePurchases(
+        applicationUserName: applicationUserName,
+      );
     } on InAppPurchaseException catch (x) {
       log('RestoreException(${x.code}, ${x.message}, ${x.source})');
       onError?.call(x.message.toString());
@@ -447,7 +474,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<void> confirmPriceChange() {
     if (Platform.isIOS) {
-      final iosPlatform = _iAPService
+      final iosPlatform = _iAPService!
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       return iosPlatform.showPriceConsentIfNeeded();
     }
@@ -457,7 +484,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<void> consumePurchase(PurchaseDetails purchaseDetails) {
     if (Platform.isAndroid) {
-      final androidPlatform = _iAPService
+      final androidPlatform = _iAPService!
           .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
       return androidPlatform.consumePurchase(purchaseDetails);
     }
@@ -467,7 +494,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<void> presentCodeRedemptionSheet() {
     if (Platform.isIOS) {
-      final iosPlatform = _iAPService
+      final iosPlatform = _iAPService!
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       return iosPlatform.presentCodeRedemptionSheet();
     }
@@ -481,7 +508,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     _productIds.clear();
     _subscription.cancel();
     if (Platform.isIOS) {
-      final platform = _iAPService
+      final platform = _iAPService!
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await platform.setDelegate(null);
     }
