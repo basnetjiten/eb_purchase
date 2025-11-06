@@ -21,6 +21,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   static EbPurchaseWrapper? _instance;
 
   EbPurchaseWrapper._() {
+    _iAPService = InAppPurchase.instance;
     _deviceInfoService = DeviceInfoService.instance;
   }
 
@@ -36,7 +37,6 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
   void init() async {
     await InAppPurchaseStoreKitPlatform.enableStoreKit1();
-    _iAPService = InAppPurchase.instance;
   }
 
   late final InAppPurchase _iAPService;
