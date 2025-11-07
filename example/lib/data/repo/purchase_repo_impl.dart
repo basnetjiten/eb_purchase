@@ -3,8 +3,7 @@ import 'package:eb_purchase/eb_purchase.dart';
 class PurchaseRepoImpl {
   PurchaseRepoImpl();
 
-  late final EbPurchaseWrapper _ebPurchaseWrapper = EbPurchaseWrapper.instance
-    ..init();
+  late final EbPurchaseWrapper _ebPurchaseWrapper = EbPurchaseWrapper.instance;
 
   Future<void> completePurchase({
     required PurchaseDetails purchaseDetail,
