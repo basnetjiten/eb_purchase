@@ -36,8 +36,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }
 
   /// Use this to enable StoreKit1
-  static initialize() async {
-    await InAppPurchaseStoreKitPlatform.enableStoreKit1();
+  static Future<bool> initialize() async {
+    return await InAppPurchaseStoreKitPlatform.enableStoreKit1();
   }
 
   late final InAppPurchase _iAPService;
