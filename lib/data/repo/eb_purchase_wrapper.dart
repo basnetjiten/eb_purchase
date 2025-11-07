@@ -36,7 +36,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }
 
   /// Use this to enable StoreKit1
-  static Future<bool> initialize() async {
+  @Deprecated('Please note that StoreKit 1 will be removed in the future.')
+  static Future<bool> enableStoreKit1() async {
     return await InAppPurchaseStoreKitPlatform.enableStoreKit1();
   }
 

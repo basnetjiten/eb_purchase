@@ -2,7 +2,7 @@ import 'package:eb_purchase/data/repo/eb_purchase_wrapper.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  EbPurchaseWrapper.initialize();
+  EbPurchaseWrapper.enableStoreKit1();
   runApp(const MyApp());
 }
 
