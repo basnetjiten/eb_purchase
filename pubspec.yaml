@@ -18,8 +18,8 @@ dependencies:
   in_app_purchase_storekit: ^0.4.6+1
 
   #Device Information
-  device_info_plus: ^11.2.2
-  package_info_plus: ^8.1.4
+  device_info_plus: ^12.3.0
+  package_info_plus: ^9.0.0
 
 
   #data models
