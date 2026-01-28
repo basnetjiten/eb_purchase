@@ -12,6 +12,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_2_wrappers.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 import '../../domain/domain.dart';
@@ -58,17 +59,30 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// - [productIds] Set of product identifiers to fetch details for.
   /// - [onDetailsFetched] Callback function called when products are fetched.
   @override
+  @Deprecated('Use valid StoreKit 2 equivalent')
+  @override
   void configure({
     required Set<String> productIds,
     required OnPurchaseDetailsReceived onDetailsFetched,
     Function(dynamic error)? onError,
   }) async {
     if (Platform.isIOS) {
-      final platform = _iAPService
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      platform.setDelegate(EbPaymentQueueDelegate());
+      await _configureIOS();
     }
+    _configureCommon(productIds, onDetailsFetched, onError);
+  }
 
+  Future<void> _configureIOS() async {
+    final platform = _iAPService
+        .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+    await platform.setDelegate(EbPaymentQueueDelegate());
+  }
+
+  void _configureCommon(
+    Set<String> productIds,
+    OnPurchaseDetailsReceived onDetailsFetched,
+    Function(dynamic error)? onError,
+  ) {
     _productIds.addAll(productIds);
 
     _subscription = _iAPService.purchaseStream.listen(
@@ -92,10 +106,27 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   ///
   ///  [onProductsFetched] callback with fetched product details.
   @override
+  @Deprecated('Use valid StoreKit 2 equivalent')
+  @override
   Future<void> fetchInAppProducts({
     required OnProductFetched onProductFetched,
     OnError? onError,
   }) async {
+    await _fetchInAppProductsCommon(onProductFetched, onError);
+  }
+
+  @override
+  Future<void> fetchInAppProductsSK2({
+    required OnProductFetched onProductFetched,
+    OnError? onError,
+  }) async {
+    await _fetchInAppProductsCommon(onProductFetched, onError);
+  }
+
+  Future<void> _fetchInAppProductsCommon(
+    OnProductFetched onProductFetched,
+    OnError? onError,
+  ) async {
     final bool isAvailable = await _iAPService.isAvailable();
 
     List<SubscriptionPlan> purchasePlans = [];
@@ -233,6 +264,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
                   product.skProduct.introductoryPrice!,
                 )
               : null,
+          appStoreProductDetails: product,
           offers: product.skProduct.discounts
               .map(AppstoreOffer.fromSkuDetails)
               .toList(),
@@ -249,12 +281,137 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// - [productDetails] Product user wants to buy
   /// - [onError] callback if the purchase encounters an error.
   @override
+  @Deprecated('Use valid StoreKit 2 equivalent')
+  @override
   Future<bool> buyProduct({
     required PurchaseParam purchaseParam,
     Function(String)? onError,
     bool consumable = false,
     bool autoConsume = true,
   }) async {
+    return _buyProductCommon(purchaseParam, onError, consumable, autoConsume);
+  }
+
+  @override
+  Future<bool> buyProductSK2({
+    required Sk2PurchaseParam purchaseParam,
+    Function(String)? onError,
+    bool consumable = false,
+    bool autoConsume = true,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
+  }) async {
+    if (Platform.isIOS) {
+      if (appAccountToken != null || quantity > 1 || discountId != null) {
+        return _buyProductSK2Specific(
+          purchaseParam: purchaseParam,
+          onError: onError,
+          appAccountToken: appAccountToken,
+          quantity: quantity,
+          discountId: discountId,
+          discountKeyIdentifier: discountKeyIdentifier,
+          discountNonce: discountNonce,
+          discountSignature: discountSignature,
+          discountTimestamp: discountTimestamp,
+        );
+      }
+    }
+
+    return _buyProductCommon(purchaseParam, onError, consumable, autoConsume);
+  }
+
+  Future<bool> _buyProductSK2Specific({
+    required Sk2PurchaseParam purchaseParam,
+    Function(String)? onError,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
+  }) async {
+    try {
+      final productDetails = purchaseParam.productDetails;
+      final sk2Products = await SK2Product.products([productDetails.id]);
+      if (sk2Products.isEmpty) {
+        onError?.call("Product not found in StoreKit 2");
+        return false;
+      }
+      final sk2Product = sk2Products.first;
+
+      SK2SubscriptionOfferPurchaseMessage? promotionOfferMessage;
+
+      if (purchaseParam.promotionalOffer != null) {
+        final offer = purchaseParam.promotionalOffer!;
+        final signatureMessage = SK2SubscriptionOfferSignatureMessage(
+          keyID: offer.signature.keyID,
+          nonce: offer.signature.nonce,
+          timestamp: offer.signature.timestamp,
+          signature: offer.signature.signature,
+        );
+        promotionOfferMessage = SK2SubscriptionOfferPurchaseMessage(
+          promotionalOfferId: offer.offerId,
+          promotionalOfferSignature: signatureMessage,
+        );
+      } else if (discountId != null &&
+          discountKeyIdentifier != null &&
+          discountNonce != null &&
+          discountSignature != null &&
+          discountTimestamp != null) {
+        final signatureMessage = SK2SubscriptionOfferSignatureMessage(
+          keyID: discountKeyIdentifier,
+          nonce: discountNonce,
+          signature: discountSignature,
+          timestamp: discountTimestamp,
+        );
+        promotionOfferMessage = SK2SubscriptionOfferPurchaseMessage(
+          promotionalOfferId: discountId,
+          promotionalOfferSignature: signatureMessage,
+        );
+      }
+
+      final finalQuantity = (quantity > 1) ? quantity : purchaseParam.quantity;
+
+      String? finalAppAccountToken = appAccountToken;
+      if (finalAppAccountToken == null &&
+          purchaseParam.applicationUserName != null) {
+        finalAppAccountToken = purchaseParam.applicationUserName;
+      }
+
+      final options = SK2ProductPurchaseOptions(
+        appAccountToken: finalAppAccountToken,
+        quantity: finalQuantity,
+        promotionalOffer: promotionOfferMessage,
+      );
+
+      final result = await SK2Product.purchase(sk2Product.id, options: options);
+
+      if (result == SK2ProductPurchaseResult.success ||
+          result == SK2ProductPurchaseResult.pending) {
+        return true;
+      } else {
+        onError?.call("Purchase failed or cancelled: $result");
+        return false;
+      }
+    } catch (e) {
+      log('SK2 Purchase Error: \$e');
+      onError?.call(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> _buyProductCommon(
+    PurchaseParam purchaseParam,
+    Function(String)? onError,
+    bool consumable,
+    bool autoConsume,
+  ) async {
     try {
       if (consumable) {
         return _iAPService.buyConsumable(
@@ -364,10 +521,27 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   Future<bool> get isStoreAvailable async => await _iAPService.isAvailable();
 
   @override
+  @Deprecated('Use valid StoreKit 2 equivalent')
+  @override
   Future<void> restorePurchases({
     String? applicationUserName,
     OnError? onError,
   }) async {
+    return _restorePurchasesCommon(applicationUserName, onError);
+  }
+
+  @override
+  Future<void> restorePurchasesSK2({
+    String? applicationUserName,
+    OnError? onError,
+  }) async {
+    return _restorePurchasesCommon(applicationUserName, onError);
+  }
+
+  Future<void> _restorePurchasesCommon(
+    String? applicationUserName,
+    OnError? onError,
+  ) async {
     try {
       return _iAPService.restorePurchases(
         applicationUserName: applicationUserName,
@@ -402,6 +576,15 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
   @override
   PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail}) {
+    return _verifyPurchaseCommon(purchaseDetail);
+  }
+
+  @override
+  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchaseDetail}) {
+    return _verifyPurchaseCommon(purchaseDetail);
+  }
+
+  PurchaseStatus _verifyPurchaseCommon(PurchaseDetails purchaseDetail) {
     bool isValidID = _productIds.any((id) => id == purchaseDetail.productID);
 
     if (purchaseDetail.status == PurchaseStatus.restored && isValidID) {
@@ -440,8 +623,19 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     );
   }
 
+  @Deprecated('Use valid StoreKit 2 equivalent')
   @override
   Future<void> confirmPriceChange() {
+    if (Platform.isIOS) {
+      final iosPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      return iosPlatform.showPriceConsentIfNeeded();
+    }
+    return Future.value();
+  }
+
+  @override
+  Future<void> confirmPriceChangeSK2() {
     if (Platform.isIOS) {
       final iosPlatform = _iAPService
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
@@ -460,8 +654,19 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     return Future.value();
   }
 
+  @Deprecated('Use valid StoreKit 2 equivalent')
   @override
   Future<void> presentCodeRedemptionSheet() {
+    if (Platform.isIOS) {
+      final iosPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      return iosPlatform.presentCodeRedemptionSheet();
+    }
+    return Future.value();
+  }
+
+  @override
+  Future<void> presentCodeRedemptionSheetSK2() {
     if (Platform.isIOS) {
       final iosPlatform = _iAPService
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();

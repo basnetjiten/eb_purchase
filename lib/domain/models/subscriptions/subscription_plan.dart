@@ -24,6 +24,7 @@ abstract class SubscriptionPlan with _$SubscriptionPlan {
     GooglePlayProductDetails? googlePlayProductDetails,
     @Default(<GooglePlayOffer>[]) List<GooglePlayOffer> googlePlayOffers,
     // App Store Fields
+    ProductDetails? appStoreProductDetails,
     String? subscriptionGroupIdentifier,
     int? numberOfUnits,
     String? subscriptionPeriodUnit,
@@ -55,6 +56,7 @@ abstract class SubscriptionPlan with _$SubscriptionPlan {
     @Default(0) double rawPrice,
     required String currencyCode,
     @Default('') String currencySymbol,
+    ProductDetails? appStoreProductDetails,
     String? subscriptionGroupIdentifier,
     int? numberOfUnits,
     String? subscriptionPeriodUnit,

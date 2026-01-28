@@ -1,6 +1,6 @@
 import 'package:eb_purchase/typedefs/typedefs.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
 /// Abstract class for managing in-app purchases in Flutter applications.
 abstract class EbPurchaseRepo {
@@ -23,7 +23,14 @@ abstract class EbPurchaseRepo {
   /// * [onProductsFetched] Callback when products are fetched.
   ///   * [onError] Callback if fetching the produts encounters an error.
 
+  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> fetchInAppProducts({
+    required OnProductFetched onProductFetched,
+    OnError? onError,
+  });
+
+  /// Fetches product details for the given product IDs (StoreKit 2).
+  Future<void> fetchInAppProductsSK2({
     required OnProductFetched onProductFetched,
     OnError? onError,
   });
@@ -35,11 +42,39 @@ abstract class EbPurchaseRepo {
   /// * [onError] Callback if the purchase encounters an error.
   /// * [consumable] Whether the product is consumable or not.
   /// * [autoConsume] Whether the product is consumed automatically
+  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<bool> buyProduct({
     required PurchaseParam purchaseParam,
     Function(String)? onError,
     bool consumable = false,
     bool autoConsume = true,
+  });
+
+  /// Initiates a purchase for a given product (StoreKit 2).
+  ///
+  /// * [purchaseParam] The product to be purchased.
+  /// * [onError] Callback if the purchase encounters an error.
+  /// * [consumable] Whether the product is consumable or not.
+  /// * [autoConsume] Whether the product is consumed automatically
+  /// * [appAccountToken] Hex string UUID to associate the purchase with a user account.
+  /// * [quantity] Quantity of the product to purchase.
+  /// * [discountId] Identifier for the subscription offer .
+  /// * [discountKeyIdentifier] Key identifier for the subscription offer.
+  /// * [discountNonce] Nonce for the subscription offer.
+  /// * [discountSignature] Signature for the subscription offer.
+  /// * [discountTimestamp] Timestamp for the subscription offer.
+  Future<bool> buyProductSK2({
+    required Sk2PurchaseParam purchaseParam,
+    Function(String)? onError,
+    bool consumable = false,
+    bool autoConsume = true,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
   });
 
   /// Verifies the status of purchases.
@@ -48,6 +83,9 @@ abstract class EbPurchaseRepo {
   /// * [purchaseDetail] Purchased item  to verify.
 
   PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail});
+
+  /// Verifies the status of purchases (StoreKit 2).
+  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchaseDetail});
 
   /// This Checks the user's old subscription in Android platform
   ///
@@ -71,7 +109,14 @@ abstract class EbPurchaseRepo {
   /// restores purchases.
   /// [applicationUserName] is used to identify purchases per user.
   /// this should be the same value sent from purchaseParam during buyProduct process,
+  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> restorePurchases({
+    String? applicationUserName,
+    Function(String)? onError,
+  });
+
+  /// restores purchases (StoreKit 2).
+  Future<void> restorePurchasesSK2({
     String? applicationUserName,
     Function(String)? onError,
   });
@@ -90,12 +135,24 @@ abstract class EbPurchaseRepo {
   /// Confirms a price change for a subscription.
   ///
   /// [iOS only]
+  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> confirmPriceChange();
+
+  /// Confirms a price change for a subscription (StoreKit 2).
+  ///
+  /// [iOS only]
+  Future<void> confirmPriceChangeSK2();
 
   /// Presents the code redemption sheet.
   ///
   /// [iOS only]
+  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> presentCodeRedemptionSheet();
+
+  /// Presents the code redemption sheet (StoreKit 2).
+  ///
+  /// [iOS only]
+  Future<void> presentCodeRedemptionSheetSK2();
 
   /// Cancels the subscription to the purchase stream.
   void dispose();
