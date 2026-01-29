@@ -15,19 +15,10 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use fetchInAppProductsSK2')
   Future<void> fetchInAppProducts({
     required OnProductFetched onProductFetched,
     OnError? onError,
   }) async => await _ebPurchaseWrapper.fetchInAppProducts(
-    onError: onError,
-    onProductFetched: onProductFetched,
-  );
-
-  Future<void> fetchInAppProductsSK2({
-    required OnProductFetched onProductFetched,
-    OnError? onError,
-  }) async => await _ebPurchaseWrapper.fetchInAppProductsSK2(
     onError: onError,
     onProductFetched: onProductFetched,
   );

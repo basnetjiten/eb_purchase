@@ -114,14 +114,6 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     await _fetchInAppProductsCommon(onProductFetched, onError);
   }
 
-  @override
-  Future<void> fetchInAppProductsSK2({
-    required OnProductFetched onProductFetched,
-    OnError? onError,
-  }) async {
-    await _fetchInAppProductsCommon(onProductFetched, onError);
-  }
-
   Future<void> _fetchInAppProductsCommon(
     OnProductFetched onProductFetched,
     OnError? onError,
