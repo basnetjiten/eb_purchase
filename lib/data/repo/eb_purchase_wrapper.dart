@@ -233,43 +233,65 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         }
       }
     } else {
-      /// cast all products to AppStoreProductDetails so that we can get
-      /// more info about the products
-      final appStoreProducts = productDetailResponse.productDetails
-          .map((e) => e as AppStoreProductDetails)
-          .toList();
-
       /// appstore products are directly added to the list of subscription plans
       /// as appstore sends all the products and subscriptions on the same list
       /// we can filter out by subscriptionGroupIdentifier but its not necessary
       ///
       /// NOTE: subscriptionGroupIdentifier is only available for auto-renewable subscriptions
       /// its null for in-app products and non-renewable subscriptions
-      for (final product in appStoreProducts) {
-        final subscriptionPlan = SubscriptionPlan.appStore(
-          id: product.id,
-          title: product.title,
-          description: product.description,
-          price: product.price,
-          rawPrice: product.rawPrice,
-          currencyCode: product.currencyCode,
-          currencySymbol: product.currencySymbol,
-          subscriptionGroupIdentifier:
-              product.skProduct.subscriptionGroupIdentifier,
-          numberOfUnits: product.skProduct.subscriptionPeriod?.numberOfUnits,
-          subscriptionPeriodUnit:
-              product.skProduct.subscriptionPeriod?.unit.name,
-          introductoryPrice: product.skProduct.introductoryPrice != null
-              ? AppstoreOffer.fromSkuDetails(
-                  product.skProduct.introductoryPrice!,
-                )
-              : null,
-          appStoreProductDetails: product,
-          offers: product.skProduct.discounts
-              .map(AppstoreOffer.fromSkuDetails)
-              .toList(),
-        );
-        purchasePlans.add(subscriptionPlan);
+      for (final product in productDetailResponse.productDetails) {
+        SubscriptionPlan? subscriptionPlan;
+        if (product is AppStoreProduct2Details) {
+          subscriptionPlan = SubscriptionPlan.appStore(
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            rawPrice: product.rawPrice,
+            currencyCode: product.currencyCode,
+            currencySymbol: product.currencySymbol,
+            subscriptionGroupIdentifier:
+                product.sk2Product.subscription?.subscriptionGroupID,
+            numberOfUnits:
+                product.sk2Product.subscription?.subscriptionPeriod.value,
+            subscriptionPeriodUnit:
+                product.sk2Product.subscription?.subscriptionPeriod.unit.name,
+            introductoryPrice: null, // SK2 handles introductory offers differently
+            appStoreProductDetails: product,
+            offers: product.sk2Product.subscription?.promotionalOffers
+                    .map(AppstoreOffer.fromSK2Details)
+                    .toList() ??
+                [],
+          );
+        } else if (product is AppStoreProductDetails) {
+          subscriptionPlan = SubscriptionPlan.appStore(
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            rawPrice: product.rawPrice,
+            currencyCode: product.currencyCode,
+            currencySymbol: product.currencySymbol,
+            subscriptionGroupIdentifier:
+                product.skProduct.subscriptionGroupIdentifier,
+            numberOfUnits: product.skProduct.subscriptionPeriod?.numberOfUnits,
+            subscriptionPeriodUnit:
+                product.skProduct.subscriptionPeriod?.unit.name,
+            introductoryPrice: product.skProduct.introductoryPrice != null
+                ? AppstoreOffer.fromSkuDetails(
+                    product.skProduct.introductoryPrice!,
+                  )
+                : null,
+            appStoreProductDetails: product,
+            offers: product.skProduct.discounts
+                .map(AppstoreOffer.fromSkuDetails)
+                .toList(),
+          );
+        }
+
+        if (subscriptionPlan != null) {
+          purchasePlans.add(subscriptionPlan);
+        }
       }
     }
 
