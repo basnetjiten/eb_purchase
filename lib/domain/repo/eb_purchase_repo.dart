@@ -146,13 +146,7 @@ abstract class EbPurchaseRepo {
   /// Presents the code redemption sheet.
   ///
   /// [iOS only]
-  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> presentCodeRedemptionSheet();
-
-  /// Presents the code redemption sheet (StoreKit 2).
-  ///
-  /// [iOS only]
-  Future<void> presentCodeRedemptionSheetSK2();
 
   /// Cancels the subscription to the purchase stream.
   void dispose();

@@ -58,8 +58,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// Required parameters:
   /// - [productIds] Set of product identifiers to fetch details for.
   /// - [onDetailsFetched] Callback function called when products are fetched.
-  @override
-  @Deprecated('Use valid StoreKit 2 equivalent')
+
   @override
   void configure({
     required Set<String> productIds,
@@ -256,9 +255,11 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
                 product.sk2Product.subscription?.subscriptionPeriod.value,
             subscriptionPeriodUnit:
                 product.sk2Product.subscription?.subscriptionPeriod.unit.name,
-            introductoryPrice: null, // SK2 handles introductory offers differently
+            introductoryPrice: null,
+            // SK2 handles introductory offers differently
             appStoreProductDetails: product,
-            offers: product.sk2Product.subscription?.promotionalOffers
+            offers:
+                product.sk2Product.subscription?.promotionalOffers
                     .map(AppstoreOffer.fromSK2Details)
                     .toList() ??
                 [],
@@ -316,7 +317,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
   @override
   Future<bool> buyProductSK2({
-    required Sk2PurchaseParam purchaseParam,
+    required PurchaseParam purchaseParam,
     Function(String)? onError,
     bool consumable = false,
     bool autoConsume = true,
@@ -330,8 +331,11 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   }) async {
     if (Platform.isIOS) {
       if (appAccountToken != null || quantity > 1 || discountId != null) {
+        final Sk2PurchaseParam sk2purchaseParam =
+            purchaseParam as Sk2PurchaseParam;
+
         return _buyProductSK2Specific(
-          purchaseParam: purchaseParam,
+          purchaseParam: sk2purchaseParam,
           onError: onError,
           appAccountToken: appAccountToken,
           quantity: quantity,
@@ -461,6 +465,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// *[productDetails]: Previous Purchased product.
   ///
   /// Returns *[PurchaseParam]: purchase product details.
+
   PurchaseParam checkPlatformSubscription({
     required String basePlanIdOrId,
     required ProductDetails productDetails,
@@ -676,19 +681,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     return Future.value();
   }
 
-  @Deprecated('Use valid StoreKit 2 equivalent')
   @override
   Future<void> presentCodeRedemptionSheet() {
-    if (Platform.isIOS) {
-      final iosPlatform = _iAPService
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      return iosPlatform.presentCodeRedemptionSheet();
-    }
-    return Future.value();
-  }
-
-  @override
-  Future<void> presentCodeRedemptionSheetSK2() {
     if (Platform.isIOS) {
       final iosPlatform = _iAPService
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();

@@ -61,7 +61,10 @@ class PurchaseRepoImpl {
     String? discountSignature,
     int? discountTimestamp,
   }) async {
-    final Sk2PurchaseParam param = Sk2PurchaseParam(productDetails: product);
+    final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
+      productDetails: product,
+      basePlanIdOrId: basePlanIdOrId,
+    );
 
     await _ebPurchaseWrapper.buyProductSK2(
       purchaseParam: param,
