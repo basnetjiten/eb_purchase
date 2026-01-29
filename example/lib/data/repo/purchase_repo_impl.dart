@@ -52,6 +52,7 @@ class PurchaseRepoImpl {
   Future<void> purchaseProductSK2({
     required String basePlanIdOrId,
     required ProductDetails product,
+    String? oldProductId,
     OnError? onError,
     String? appAccountToken,
     int quantity = 1,
@@ -64,6 +65,7 @@ class PurchaseRepoImpl {
     final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
       productDetails: product,
       basePlanIdOrId: basePlanIdOrId,
+      oldProductId: oldProductId,
     );
 
     await _ebPurchaseWrapper.buyProductSK2(
