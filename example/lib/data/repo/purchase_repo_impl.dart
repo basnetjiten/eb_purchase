@@ -72,14 +72,9 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use initiateRestoreSK2')
   void initiateRestore({OnError? onError}) async =>
       await _ebPurchaseWrapper.restorePurchases(onError: onError);
 
-  void initiateRestoreSK2({OnError? onError}) async =>
-      await _ebPurchaseWrapper.restorePurchasesSK2(onError: onError);
-
-  @Deprecated('Use configureSK2')
   void configure({
     required Set<String> productIds,
     required OnPurchaseDetailsReceived onDetailsFetched,
@@ -90,12 +85,8 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use verifyPurchaseSK2')
   PurchaseStatus verifyPurchase({required PurchaseDetails purchase}) =>
       _ebPurchaseWrapper.verifyPurchase(purchaseDetail: purchase);
-
-  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchase}) =>
-      _ebPurchaseWrapper.verifyPurchaseSK2(purchaseDetail: purchase);
 
   Future<BasePurchaseModel> createPlatformSpecificPlan({
     required PurchaseDetails purchaseModel,

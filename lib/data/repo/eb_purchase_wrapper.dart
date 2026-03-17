@@ -104,8 +104,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// Fetches product details for given product IDs.
   ///
   ///  [onProductsFetched] callback with fetched product details.
-  @override
-  @Deprecated('Use valid StoreKit 2 equivalent')
+
   @override
   Future<void> fetchInAppProducts({
     required OnProductFetched onProductFetched,
@@ -539,8 +538,6 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<bool> get isStoreAvailable async => await _iAPService.isAvailable();
 
-  @override
-  @Deprecated('Use valid StoreKit 2 equivalent')
   @override
   Future<void> restorePurchases({
     String? applicationUserName,
