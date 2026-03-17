@@ -549,14 +549,6 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     return _restorePurchasesCommon(applicationUserName, onError);
   }
 
-  @override
-  Future<void> restorePurchasesSK2({
-    String? applicationUserName,
-    OnError? onError,
-  }) async {
-    return _restorePurchasesCommon(applicationUserName, onError);
-  }
-
   Future<void> _restorePurchasesCommon(
     String? applicationUserName,
     OnError? onError,
@@ -595,11 +587,6 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
   @override
   PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail}) {
-    return _verifyPurchaseCommon(purchaseDetail);
-  }
-
-  @override
-  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchaseDetail}) {
     return _verifyPurchaseCommon(purchaseDetail);
   }
 
