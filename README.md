@@ -83,6 +83,12 @@ Initiate the purchase flow for a selected product using the `purchaseProduct`met
 #### Example:
 ```dart
 void main() async {
+
+  /// Forcefully enable storekit1 as storekit2 is new and contains unresolved issues
+  if (Platform.isIOS) {
+    await EbPurchaseWrapper.enableStoreKit1();
+  }
+  
   /// 1. Initialize the purchase repository
   ///  ...
   /// 2. Configure the product IDs
