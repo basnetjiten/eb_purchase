@@ -23,14 +23,7 @@ abstract class EbPurchaseRepo {
   /// * [onProductsFetched] Callback when products are fetched.
   ///   * [onError] Callback if fetching the produts encounters an error.
 
-  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> fetchInAppProducts({
-    required OnProductFetched onProductFetched,
-    OnError? onError,
-  });
-
-  /// Fetches product details for the given product IDs (StoreKit 2).
-  Future<void> fetchInAppProductsSK2({
     required OnProductFetched onProductFetched,
     OnError? onError,
   });
@@ -84,9 +77,6 @@ abstract class EbPurchaseRepo {
 
   PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail});
 
-  /// Verifies the status of purchases (StoreKit 2).
-  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchaseDetail});
-
   /// This Checks the user's old subscription in Android platform
   ///
   /// In case of Apple Platform it handles this internally
@@ -109,14 +99,7 @@ abstract class EbPurchaseRepo {
   /// restores purchases.
   /// [applicationUserName] is used to identify purchases per user.
   /// this should be the same value sent from purchaseParam during buyProduct process,
-  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> restorePurchases({
-    String? applicationUserName,
-    Function(String)? onError,
-  });
-
-  /// restores purchases (StoreKit 2).
-  Future<void> restorePurchasesSK2({
     String? applicationUserName,
     Function(String)? onError,
   });
@@ -146,13 +129,7 @@ abstract class EbPurchaseRepo {
   /// Presents the code redemption sheet.
   ///
   /// [iOS only]
-  @Deprecated('Use valid StoreKit 2 equivalent')
   Future<void> presentCodeRedemptionSheet();
-
-  /// Presents the code redemption sheet (StoreKit 2).
-  ///
-  /// [iOS only]
-  Future<void> presentCodeRedemptionSheetSK2();
 
   /// Cancels the subscription to the purchase stream.
   void dispose();

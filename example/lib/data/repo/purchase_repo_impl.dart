@@ -15,19 +15,10 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use fetchInAppProductsSK2')
   Future<void> fetchInAppProducts({
     required OnProductFetched onProductFetched,
     OnError? onError,
   }) async => await _ebPurchaseWrapper.fetchInAppProducts(
-    onError: onError,
-    onProductFetched: onProductFetched,
-  );
-
-  Future<void> fetchInAppProductsSK2({
-    required OnProductFetched onProductFetched,
-    OnError? onError,
-  }) async => await _ebPurchaseWrapper.fetchInAppProductsSK2(
     onError: onError,
     onProductFetched: onProductFetched,
   );
@@ -52,6 +43,7 @@ class PurchaseRepoImpl {
   Future<void> purchaseProductSK2({
     required String basePlanIdOrId,
     required ProductDetails product,
+    String? oldProductId,
     OnError? onError,
     String? appAccountToken,
     int quantity = 1,
@@ -61,7 +53,11 @@ class PurchaseRepoImpl {
     String? discountSignature,
     int? discountTimestamp,
   }) async {
-    final Sk2PurchaseParam param = Sk2PurchaseParam(productDetails: product);
+    final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
+      productDetails: product,
+      basePlanIdOrId: basePlanIdOrId,
+      oldProductId: oldProductId,
+    );
 
     await _ebPurchaseWrapper.buyProductSK2(
       purchaseParam: param,
@@ -76,14 +72,9 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use initiateRestoreSK2')
   void initiateRestore({OnError? onError}) async =>
       await _ebPurchaseWrapper.restorePurchases(onError: onError);
 
-  void initiateRestoreSK2({OnError? onError}) async =>
-      await _ebPurchaseWrapper.restorePurchasesSK2(onError: onError);
-
-  @Deprecated('Use configureSK2')
   void configure({
     required Set<String> productIds,
     required OnPurchaseDetailsReceived onDetailsFetched,
@@ -94,12 +85,8 @@ class PurchaseRepoImpl {
     );
   }
 
-  @Deprecated('Use verifyPurchaseSK2')
   PurchaseStatus verifyPurchase({required PurchaseDetails purchase}) =>
       _ebPurchaseWrapper.verifyPurchase(purchaseDetail: purchase);
-
-  PurchaseStatus verifyPurchaseSK2({required PurchaseDetails purchase}) =>
-      _ebPurchaseWrapper.verifyPurchaseSK2(purchaseDetail: purchase);
 
   Future<BasePurchaseModel> createPlatformSpecificPlan({
     required PurchaseDetails purchaseModel,

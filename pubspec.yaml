@@ -14,8 +14,9 @@ dependencies:
 
   #Billing
   in_app_purchase: ^3.2.3
-  in_app_purchase_android: ^0.4.0+6
-  in_app_purchase_storekit: ^0.4.6+1
+  in_app_purchase_android: ^0.4.0+8
+  in_app_purchase_storekit: ^0.4.8+1
+
 
   #Device Information
   device_info_plus: ^12.3.0

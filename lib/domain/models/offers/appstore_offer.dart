@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:in_app_purchase_storekit/store_kit_2_wrappers.dart';
 
 part 'appstore_offer.freezed.dart';
 part 'appstore_offer.g.dart';
@@ -38,6 +39,18 @@ abstract class AppstoreOffer with _$AppstoreOffer {
       paymentMode: skuDetails.paymentMode.name,
       numberOfUnits: skuDetails.subscriptionPeriod.numberOfUnits,
       subscriptionPeriodUnit: skuDetails.subscriptionPeriod.unit.name,
+    );
+  }
+
+  factory AppstoreOffer.fromSK2Details(SK2SubscriptionOffer skuDetails) {
+    return AppstoreOffer(
+      identifier: skuDetails.id,
+      numberOfPeriods: skuDetails.periodCount,
+      price: skuDetails.price.toString(),
+      type: skuDetails.type.name,
+      paymentMode: skuDetails.paymentMode.name,
+      numberOfUnits: skuDetails.period.value,
+      subscriptionPeriodUnit: skuDetails.period.unit.name,
     );
   }
 }

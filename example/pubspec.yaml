@@ -22,7 +22,6 @@ dependencies:
 
   eb_purchase:
     path: ../
-  in_app_purchase: ^3.2.1
 
   collection: ^1.19.1
 
@@ -46,7 +45,7 @@ dev_dependencies:
 
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   #generators
   build_runner: ^2.7.1
