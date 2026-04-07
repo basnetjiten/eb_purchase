@@ -33,6 +33,18 @@ dependencies:
 
 Follow the steps below to integrate and use the `eb_purchase` package in your Flutter project.
 
+### Bootstrap:
+
+```dart
+
+void bootstrap(){
+  /// Forcefully enable storekit1 as storekit2 is new and contains unresolved issues
+  if (Platform.isIOS) {
+     EbPurchaseWrapper.enableStoreKit1();
+  } 
+}
+
+```
 ### 1. Configure Your Product IDs
 Start by configuring the `productIds` for the in-app products or subscriptions you want to manage. Use the `configure` method to set up the product IDs and handle product details when they are fetched.
 
@@ -83,6 +95,7 @@ Initiate the purchase flow for a selected product using the `purchaseProduct`met
 #### Example:
 ```dart
 void main() async {
+  
   /// 1. Initialize the purchase repository
   ///  ...
   /// 2. Configure the product IDs

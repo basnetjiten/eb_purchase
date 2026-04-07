@@ -6,7 +6,7 @@ part 'google_play_offer.freezed.dart';
 part 'google_play_offer.g.dart';
 
 @Freezed(map: FreezedMapOptions.none, when: FreezedWhenOptions.none)
-class GooglePlayOffer with _$GooglePlayOffer {
+abstract class GooglePlayOffer with _$GooglePlayOffer {
   const GooglePlayOffer._();
 
   const factory GooglePlayOffer({
@@ -27,7 +27,8 @@ class GooglePlayOffer with _$GooglePlayOffer {
     required String offerIdToken,
 
     /// actual product details of offer
-    @JsonKey(includeFromJson: false, includeToJson: false) GooglePlayProductDetails? productDetails,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    GooglePlayProductDetails? productDetails,
 
     /// The pricing phases for the subscription product.
     @Default([]) List<GooglePlayPricingPhase> pricingPhases,
@@ -37,7 +38,8 @@ class GooglePlayOffer with _$GooglePlayOffer {
     int? subsequentCommitmentPaymentsCount,
   }) = _GooglePlayOffer;
 
-  factory GooglePlayOffer.fromJson(Map<String, dynamic> json) => _$GooglePlayOfferFromJson(json);
+  factory GooglePlayOffer.fromJson(Map<String, dynamic> json) =>
+      _$GooglePlayOfferFromJson(json);
 
   factory GooglePlayOffer.fromOffer(
     SubscriptionOfferDetailsWrapper wrapper,
@@ -49,9 +51,13 @@ class GooglePlayOffer with _$GooglePlayOffer {
       offerTags: wrapper.offerTags,
       offerIdToken: wrapper.offerIdToken,
       productDetails: productDetails,
-      pricingPhases: wrapper.pricingPhases.map(GooglePlayPricingPhase.fromPricingPhase).toList(),
-      commitmentPaymentsCount: wrapper.installmentPlanDetails?.commitmentPaymentsCount,
-      subsequentCommitmentPaymentsCount: wrapper.installmentPlanDetails?.subsequentCommitmentPaymentsCount,
+      pricingPhases: wrapper.pricingPhases
+          .map(GooglePlayPricingPhase.fromPricingPhase)
+          .toList(),
+      commitmentPaymentsCount:
+          wrapper.installmentPlanDetails?.commitmentPaymentsCount,
+      subsequentCommitmentPaymentsCount:
+          wrapper.installmentPlanDetails?.subsequentCommitmentPaymentsCount,
     );
   }
 }

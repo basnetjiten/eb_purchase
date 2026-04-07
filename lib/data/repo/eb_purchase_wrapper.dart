@@ -12,6 +12,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
+import 'package:in_app_purchase_storekit/store_kit_2_wrappers.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 import '../../domain/domain.dart';
@@ -35,6 +36,12 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     return _instance = EbPurchaseWrapper._();
   }
 
+  /// Use this to enable StoreKit1
+  @Deprecated('Please note that StoreKit 1 will be removed in the future.')
+  static Future<bool> enableStoreKit1() async {
+    return await InAppPurchaseStoreKitPlatform.enableStoreKit1();
+  }
+
   late final InAppPurchase _iAPService;
   late final DeviceInfoService _deviceInfoService;
 
@@ -51,19 +58,30 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// Required parameters:
   /// - [productIds] Set of product identifiers to fetch details for.
   /// - [onDetailsFetched] Callback function called when products are fetched.
+
   @override
   void configure({
     required Set<String> productIds,
     required OnPurchaseDetailsReceived onDetailsFetched,
     Function(dynamic error)? onError,
-  }) {
+  }) async {
     if (Platform.isIOS) {
-      final platform =
-          _iAPService
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      platform.setDelegate(EbPaymentQueueDelegate());
+      await _configureIOS();
     }
+    _configureCommon(productIds, onDetailsFetched, onError);
+  }
 
+  Future<void> _configureIOS() async {
+    final platform = _iAPService
+        .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+    await platform.setDelegate(EbPaymentQueueDelegate());
+  }
+
+  void _configureCommon(
+    Set<String> productIds,
+    OnPurchaseDetailsReceived onDetailsFetched,
+    Function(dynamic error)? onError,
+  ) {
     _productIds.addAll(productIds);
 
     _subscription = _iAPService.purchaseStream.listen(
@@ -86,11 +104,19 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// Fetches product details for given product IDs.
   ///
   ///  [onProductsFetched] callback with fetched product details.
+
   @override
   Future<void> fetchInAppProducts({
     required OnProductFetched onProductFetched,
     OnError? onError,
   }) async {
+    await _fetchInAppProductsCommon(onProductFetched, onError);
+  }
+
+  Future<void> _fetchInAppProductsCommon(
+    OnProductFetched onProductFetched,
+    OnError? onError,
+  ) async {
     final bool isAvailable = await _iAPService.isAvailable();
 
     List<SubscriptionPlan> purchasePlans = [];
@@ -104,10 +130,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
     if (productDetailResponse.error != null ||
         productDetailResponse.productDetails.isEmpty) {
-      final String errorMessage =
-          productDetailResponse.error != null
-              ? productDetailResponse.error!.message
-              : 'No Active Products';
+      final String errorMessage = productDetailResponse.error != null
+          ? productDetailResponse.error!.message
+          : 'No Active Products';
 
       return onError?.call(errorMessage);
     }
@@ -115,10 +140,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     if (Platform.isAndroid) {
       /// cast all products to GooglePlayProductDetails so that we can get
       /// more info about the products
-      final googlePlayProducts =
-          productDetailResponse.productDetails
-              .map((e) => e as GooglePlayProductDetails)
-              .toList();
+      final googlePlayProducts = productDetailResponse.productDetails
+          .map((e) => e as GooglePlayProductDetails)
+          .toList();
 
       /// if inAppProducts is not empty then we are dealing with in-app products
       if (googlePlayProducts.inAppProducts.isNotEmpty) {
@@ -150,9 +174,9 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         for (final MapEntry(value: products) in groupedProducts.entries) {
           for (final product in products) {
             /// actual product can be obtained from the subscriptionOfferDetails using subscriptionIndex on product
-            final actualProduct =
-                product.productDetails.subscriptionOfferDetails![product
-                    .subscriptionIndex!];
+            final actualProduct = product
+                .productDetails
+                .subscriptionOfferDetails![product.subscriptionIndex!];
 
             /// if offerId is null then it is a base plan
             if (actualProduct.offerId == null) {
@@ -199,45 +223,67 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         }
       }
     } else {
-      /// cast all products to AppStoreProductDetails so that we can get
-      /// more info about the products
-      final appStoreProducts =
-          productDetailResponse.productDetails
-              .map((e) => e as AppStoreProductDetails)
-              .toList();
-
       /// appstore products are directly added to the list of subscription plans
       /// as appstore sends all the products and subscriptions on the same list
       /// we can filter out by subscriptionGroupIdentifier but its not necessary
       ///
       /// NOTE: subscriptionGroupIdentifier is only available for auto-renewable subscriptions
       /// its null for in-app products and non-renewable subscriptions
-      for (final product in appStoreProducts) {
-        final subscriptionPlan = SubscriptionPlan.appStore(
-          id: product.id,
-          title: product.title,
-          description: product.description,
-          price: product.price,
-          rawPrice: product.rawPrice,
-          currencyCode: product.currencyCode,
-          currencySymbol: product.currencySymbol,
-          subscriptionGroupIdentifier:
-              product.skProduct.subscriptionGroupIdentifier,
-          numberOfUnits: product.skProduct.subscriptionPeriod?.numberOfUnits,
-          subscriptionPeriodUnit:
-              product.skProduct.subscriptionPeriod?.unit.name,
-          introductoryPrice:
-              product.skProduct.introductoryPrice != null
-                  ? AppstoreOffer.fromSkuDetails(
+      for (final product in productDetailResponse.productDetails) {
+        SubscriptionPlan? subscriptionPlan;
+        if (product is AppStoreProduct2Details) {
+          subscriptionPlan = SubscriptionPlan.appStore(
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            rawPrice: product.rawPrice,
+            currencyCode: product.currencyCode,
+            currencySymbol: product.currencySymbol,
+            subscriptionGroupIdentifier:
+                product.sk2Product.subscription?.subscriptionGroupID,
+            numberOfUnits:
+                product.sk2Product.subscription?.subscriptionPeriod.value,
+            subscriptionPeriodUnit:
+                product.sk2Product.subscription?.subscriptionPeriod.unit.name,
+            introductoryPrice: null,
+            // SK2 handles introductory offers differently
+            appStoreProductDetails: product,
+            offers:
+                product.sk2Product.subscription?.promotionalOffers
+                    .map(AppstoreOffer.fromSK2Details)
+                    .toList() ??
+                [],
+          );
+        } else if (product is AppStoreProductDetails) {
+          subscriptionPlan = SubscriptionPlan.appStore(
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            rawPrice: product.rawPrice,
+            currencyCode: product.currencyCode,
+            currencySymbol: product.currencySymbol,
+            subscriptionGroupIdentifier:
+                product.skProduct.subscriptionGroupIdentifier,
+            numberOfUnits: product.skProduct.subscriptionPeriod?.numberOfUnits,
+            subscriptionPeriodUnit:
+                product.skProduct.subscriptionPeriod?.unit.name,
+            introductoryPrice: product.skProduct.introductoryPrice != null
+                ? AppstoreOffer.fromSkuDetails(
                     product.skProduct.introductoryPrice!,
                   )
-                  : null,
-          offers:
-              product.skProduct.discounts
-                  .map(AppstoreOffer.fromSkuDetails)
-                  .toList(),
-        );
-        purchasePlans.add(subscriptionPlan);
+                : null,
+            appStoreProductDetails: product,
+            offers: product.skProduct.discounts
+                .map(AppstoreOffer.fromSkuDetails)
+                .toList(),
+          );
+        }
+
+        if (subscriptionPlan != null) {
+          purchasePlans.add(subscriptionPlan);
+        }
       }
     }
 
@@ -249,12 +295,140 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// - [productDetails] Product user wants to buy
   /// - [onError] callback if the purchase encounters an error.
   @override
+  @Deprecated('Use valid StoreKit 2 equivalent')
+  @override
   Future<bool> buyProduct({
     required PurchaseParam purchaseParam,
     Function(String)? onError,
     bool consumable = false,
     bool autoConsume = true,
   }) async {
+    return _buyProductCommon(purchaseParam, onError, consumable, autoConsume);
+  }
+
+  @override
+  Future<bool> buyProductSK2({
+    required PurchaseParam purchaseParam,
+    Function(String)? onError,
+    bool consumable = false,
+    bool autoConsume = true,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
+  }) async {
+    if (Platform.isIOS) {
+      if (appAccountToken != null || quantity > 1 || discountId != null) {
+        final Sk2PurchaseParam sk2purchaseParam =
+            purchaseParam as Sk2PurchaseParam;
+
+        return _buyProductSK2Specific(
+          purchaseParam: sk2purchaseParam,
+          onError: onError,
+          appAccountToken: appAccountToken,
+          quantity: quantity,
+          discountId: discountId,
+          discountKeyIdentifier: discountKeyIdentifier,
+          discountNonce: discountNonce,
+          discountSignature: discountSignature,
+          discountTimestamp: discountTimestamp,
+        );
+      }
+    }
+
+    return _buyProductCommon(purchaseParam, onError, consumable, autoConsume);
+  }
+
+  Future<bool> _buyProductSK2Specific({
+    required Sk2PurchaseParam purchaseParam,
+    Function(String)? onError,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
+  }) async {
+    try {
+      final productDetails = purchaseParam.productDetails;
+      final sk2Products = await SK2Product.products([productDetails.id]);
+      if (sk2Products.isEmpty) {
+        onError?.call("Product not found in StoreKit 2");
+        return false;
+      }
+      final sk2Product = sk2Products.first;
+
+      SK2SubscriptionOfferPurchaseMessage? promotionOfferMessage;
+
+      if (purchaseParam.promotionalOffer != null) {
+        final offer = purchaseParam.promotionalOffer!;
+        final signatureMessage = SK2SubscriptionOfferSignatureMessage(
+          keyID: offer.signature.keyID,
+          nonce: offer.signature.nonce,
+          timestamp: offer.signature.timestamp,
+          signature: offer.signature.signature,
+        );
+        promotionOfferMessage = SK2SubscriptionOfferPurchaseMessage(
+          promotionalOfferId: offer.offerId,
+          promotionalOfferSignature: signatureMessage,
+        );
+      } else if (discountId != null &&
+          discountKeyIdentifier != null &&
+          discountNonce != null &&
+          discountSignature != null &&
+          discountTimestamp != null) {
+        final signatureMessage = SK2SubscriptionOfferSignatureMessage(
+          keyID: discountKeyIdentifier,
+          nonce: discountNonce,
+          signature: discountSignature,
+          timestamp: discountTimestamp,
+        );
+        promotionOfferMessage = SK2SubscriptionOfferPurchaseMessage(
+          promotionalOfferId: discountId,
+          promotionalOfferSignature: signatureMessage,
+        );
+      }
+
+      final finalQuantity = (quantity > 1) ? quantity : purchaseParam.quantity;
+
+      String? finalAppAccountToken = appAccountToken;
+      if (finalAppAccountToken == null &&
+          purchaseParam.applicationUserName != null) {
+        finalAppAccountToken = purchaseParam.applicationUserName;
+      }
+
+      final options = SK2ProductPurchaseOptions(
+        appAccountToken: finalAppAccountToken,
+        quantity: finalQuantity,
+        promotionalOffer: promotionOfferMessage,
+      );
+
+      final result = await SK2Product.purchase(sk2Product.id, options: options);
+
+      if (result == SK2ProductPurchaseResult.success ||
+          result == SK2ProductPurchaseResult.pending) {
+        return true;
+      } else {
+        onError?.call("Purchase failed or cancelled: $result");
+        return false;
+      }
+    } catch (e) {
+      log('SK2 Purchase Error: \$e');
+      onError?.call(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> _buyProductCommon(
+    PurchaseParam purchaseParam,
+    Function(String)? onError,
+    bool consumable,
+    bool autoConsume,
+  ) async {
     try {
       if (consumable) {
         return _iAPService.buyConsumable(
@@ -282,6 +456,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   /// *[productDetails]: Previous Purchased product.
   ///
   /// Returns *[PurchaseParam]: purchase product details.
+
   PurchaseParam checkPlatformSubscription({
     required String basePlanIdOrId,
     required ProductDetails productDetails,
@@ -297,15 +472,14 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
       return GooglePlayPurchaseParam(
         productDetails: productDetails,
-        changeSubscriptionParam:
-            (oldSubscription != null)
-                ? ChangeSubscriptionParam(
-                  oldPurchaseDetails:
-                      (oldSubscription as GooglePlayPurchaseDetails),
-                  replacementMode:
-                      replacementMode ?? ReplacementMode.chargeFullPrice,
-                )
-                : null,
+        changeSubscriptionParam: (oldSubscription != null)
+            ? ChangeSubscriptionParam(
+                oldPurchaseDetails:
+                    (oldSubscription as GooglePlayPurchaseDetails),
+                replacementMode:
+                    replacementMode ?? ReplacementMode.chargeFullPrice,
+              )
+            : null,
       );
     } else {
       return PurchaseParam(productDetails: productDetails);
@@ -369,6 +543,13 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     String? applicationUserName,
     OnError? onError,
   }) async {
+    return _restorePurchasesCommon(applicationUserName, onError);
+  }
+
+  Future<void> _restorePurchasesCommon(
+    String? applicationUserName,
+    OnError? onError,
+  ) async {
     try {
       return _iAPService.restorePurchases(
         applicationUserName: applicationUserName,
@@ -387,6 +568,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     if (Platform.isIOS) {
       final SKPaymentQueueWrapper skPaymentQueueWrapper =
           SKPaymentQueueWrapper();
+
       try {
         final List<SKPaymentTransactionWrapper> transactions =
             await skPaymentQueueWrapper.transactions();
@@ -402,6 +584,10 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
 
   @override
   PurchaseStatus verifyPurchase({required PurchaseDetails purchaseDetail}) {
+    return _verifyPurchaseCommon(purchaseDetail);
+  }
+
+  PurchaseStatus _verifyPurchaseCommon(PurchaseDetails purchaseDetail) {
     bool isValidID = _productIds.any((id) => id == purchaseDetail.productID);
 
     if (purchaseDetail.status == PurchaseStatus.restored && isValidID) {
@@ -417,7 +603,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     required PurchaseDetails purchasedProduct,
     String? currencySymbol,
     double? price,
-    Map<String,dynamic>? metaData
+    Map<String, dynamic>? metaData,
   }) async {
     final String packageName = await _deviceInfoService.packageName;
 
@@ -426,7 +612,7 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
         currencySymbol: currencySymbol,
         price: price,
         receipt: purchasedProduct.verificationData.serverVerificationData,
-        metaData: metaData
+        metaData: metaData,
       );
     }
     return AndroidPurchaseModel(
@@ -440,12 +626,22 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     );
   }
 
+  @Deprecated('Use valid StoreKit 2 equivalent')
   @override
   Future<void> confirmPriceChange() {
     if (Platform.isIOS) {
-      final iosPlatform =
-          _iAPService
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final iosPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      return iosPlatform.showPriceConsentIfNeeded();
+    }
+    return Future.value();
+  }
+
+  @override
+  Future<void> confirmPriceChangeSK2() {
+    if (Platform.isIOS) {
+      final iosPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       return iosPlatform.showPriceConsentIfNeeded();
     }
     return Future.value();
@@ -454,9 +650,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<void> consumePurchase(PurchaseDetails purchaseDetails) {
     if (Platform.isAndroid) {
-      final androidPlatform =
-          _iAPService
-              .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+      final androidPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
       return androidPlatform.consumePurchase(purchaseDetails);
     }
     return Future.value();
@@ -465,9 +660,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
   @override
   Future<void> presentCodeRedemptionSheet() {
     if (Platform.isIOS) {
-      final iosPlatform =
-          _iAPService
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final iosPlatform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       return iosPlatform.presentCodeRedemptionSheet();
     }
     return Future.value();
@@ -480,9 +674,8 @@ class EbPurchaseWrapper implements EbPurchaseRepo, EbVerifyPurchaseRepo {
     _productIds.clear();
     _subscription.cancel();
     if (Platform.isIOS) {
-      final platform =
-          _iAPService
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final platform = _iAPService
+          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await platform.setDelegate(null);
     }
   }

@@ -6,9 +6,9 @@ part of 'google_play_offer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$GooglePlayOfferImpl _$$GooglePlayOfferImplFromJson(
+_GooglePlayOffer _$GooglePlayOfferFromJson(
   Map<String, dynamic> json,
-) => _$GooglePlayOfferImpl(
+) => _GooglePlayOffer(
   basePlanId: json['basePlanId'] as String,
   offerId: json['offerId'] as String?,
   offerTags:
@@ -27,15 +27,14 @@ _$GooglePlayOfferImpl _$$GooglePlayOfferImplFromJson(
       (json['subsequentCommitmentPaymentsCount'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$$GooglePlayOfferImplToJson(
-  _$GooglePlayOfferImpl instance,
-) => <String, dynamic>{
-  'basePlanId': instance.basePlanId,
-  'offerId': instance.offerId,
-  'offerTags': instance.offerTags,
-  'offerIdToken': instance.offerIdToken,
-  'pricingPhases': instance.pricingPhases,
-  'commitmentPaymentsCount': instance.commitmentPaymentsCount,
-  'subsequentCommitmentPaymentsCount':
-      instance.subsequentCommitmentPaymentsCount,
-};
+Map<String, dynamic> _$GooglePlayOfferToJson(_GooglePlayOffer instance) =>
+    <String, dynamic>{
+      'basePlanId': instance.basePlanId,
+      'offerId': instance.offerId,
+      'offerTags': instance.offerTags,
+      'offerIdToken': instance.offerIdToken,
+      'pricingPhases': instance.pricingPhases,
+      'commitmentPaymentsCount': instance.commitmentPaymentsCount,
+      'subsequentCommitmentPaymentsCount':
+          instance.subsequentCommitmentPaymentsCount,
+    };

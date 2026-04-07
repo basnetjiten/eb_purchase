@@ -6,17 +6,17 @@ part of 'android_purchase_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AndroidPurchaseModelImpl _$$AndroidPurchaseModelImplFromJson(
+_AndroidPurchaseModel _$AndroidPurchaseModelFromJson(
   Map<String, dynamic> json,
-) => _$AndroidPurchaseModelImpl(
+) => _AndroidPurchaseModel(
   data: AndroidData.fromJson(json['data'] as Map<String, dynamic>),
   currencySymbol: json['currencySymbol'] as String?,
   price: (json['price'] as num?)?.toDouble(),
   metaData: json['metaData'] as Map<String, dynamic>?,
 );
 
-Map<String, dynamic> _$$AndroidPurchaseModelImplToJson(
-  _$AndroidPurchaseModelImpl instance,
+Map<String, dynamic> _$AndroidPurchaseModelToJson(
+  _AndroidPurchaseModel instance,
 ) => <String, dynamic>{
   'data': instance.data,
   'currencySymbol': instance.currencySymbol,
@@ -24,15 +24,14 @@ Map<String, dynamic> _$$AndroidPurchaseModelImplToJson(
   'metaData': instance.metaData,
 };
 
-_$AndroidDataImpl _$$AndroidDataImplFromJson(Map<String, dynamic> json) =>
-    _$AndroidDataImpl(
-      packageName: json['packageName'] as String,
-      subscriptionId: json['subscriptionId'] as String,
-      token: json['token'] as String,
-      signature: json['signature'] as String?,
-    );
+_AndroidData _$AndroidDataFromJson(Map<String, dynamic> json) => _AndroidData(
+  packageName: json['packageName'] as String,
+  subscriptionId: json['subscriptionId'] as String,
+  token: json['token'] as String,
+  signature: json['signature'] as String?,
+);
 
-Map<String, dynamic> _$$AndroidDataImplToJson(_$AndroidDataImpl instance) =>
+Map<String, dynamic> _$AndroidDataToJson(_AndroidData instance) =>
     <String, dynamic>{
       'packageName': instance.packageName,
       'subscriptionId': instance.subscriptionId,

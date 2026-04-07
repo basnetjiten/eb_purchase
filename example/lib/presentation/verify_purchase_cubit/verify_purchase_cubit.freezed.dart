@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,291 +9,269 @@ part of 'verify_purchase_cubit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$VerifyPurchaseState {
-  bool get verifyInProgress => throw _privateConstructorUsedError;
-  bool get isVerified => throw _privateConstructorUsedError;
-  String? get message => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-      bool verifyInProgress,
-      bool isVerified,
-      String? message,
-    )
-    initial,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool verifyInProgress, bool isVerified, String? message)?
-    initial,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool verifyInProgress, bool isVerified, String? message)?
-    initial,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
 
-  /// Create a copy of VerifyPurchaseState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $VerifyPurchaseStateCopyWith<VerifyPurchaseState> get copyWith =>
-      throw _privateConstructorUsedError;
+ bool get verifyInProgress; bool get isVerified; String? get message;
+/// Create a copy of VerifyPurchaseState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VerifyPurchaseStateCopyWith<VerifyPurchaseState> get copyWith => _$VerifyPurchaseStateCopyWithImpl<VerifyPurchaseState>(this as VerifyPurchaseState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyPurchaseState&&(identical(other.verifyInProgress, verifyInProgress) || other.verifyInProgress == verifyInProgress)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,verifyInProgress,isVerified,message);
+
+@override
+String toString() {
+  return 'VerifyPurchaseState(verifyInProgress: $verifyInProgress, isVerified: $isVerified, message: $message)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $VerifyPurchaseStateCopyWith<$Res> {
-  factory $VerifyPurchaseStateCopyWith(
-    VerifyPurchaseState value,
-    $Res Function(VerifyPurchaseState) then,
-  ) = _$VerifyPurchaseStateCopyWithImpl<$Res, VerifyPurchaseState>;
-  @useResult
-  $Res call({bool verifyInProgress, bool isVerified, String? message});
-}
+abstract mixin class $VerifyPurchaseStateCopyWith<$Res>  {
+  factory $VerifyPurchaseStateCopyWith(VerifyPurchaseState value, $Res Function(VerifyPurchaseState) _then) = _$VerifyPurchaseStateCopyWithImpl;
+@useResult
+$Res call({
+ bool verifyInProgress, bool isVerified, String? message
+});
 
+
+
+
+}
 /// @nodoc
-class _$VerifyPurchaseStateCopyWithImpl<$Res, $Val extends VerifyPurchaseState>
+class _$VerifyPurchaseStateCopyWithImpl<$Res>
     implements $VerifyPurchaseStateCopyWith<$Res> {
-  _$VerifyPurchaseStateCopyWithImpl(this._value, this._then);
+  _$VerifyPurchaseStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final VerifyPurchaseState _self;
+  final $Res Function(VerifyPurchaseState) _then;
 
-  /// Create a copy of VerifyPurchaseState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? verifyInProgress = null,
-    Object? isVerified = null,
-    Object? message = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            verifyInProgress:
-                null == verifyInProgress
-                    ? _value.verifyInProgress
-                    : verifyInProgress // ignore: cast_nullable_to_non_nullable
-                        as bool,
-            isVerified:
-                null == isVerified
-                    ? _value.isVerified
-                    : isVerified // ignore: cast_nullable_to_non_nullable
-                        as bool,
-            message:
-                freezed == message
-                    ? _value.message
-                    : message // ignore: cast_nullable_to_non_nullable
-                        as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of VerifyPurchaseState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? verifyInProgress = null,Object? isVerified = null,Object? message = freezed,}) {
+  return _then(_self.copyWith(
+verifyInProgress: null == verifyInProgress ? _self.verifyInProgress : verifyInProgress // ignore: cast_nullable_to_non_nullable
+as bool,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [VerifyPurchaseState].
+extension VerifyPurchaseStatePatterns on VerifyPurchaseState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,}){
+final _that = this;
+switch (_that) {
+case _Initial():
+return initial(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,}){
+final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool verifyInProgress,  bool isVerified,  String? message)?  initial,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that.verifyInProgress,_that.isVerified,_that.message);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool verifyInProgress,  bool isVerified,  String? message)  initial,}) {final _that = this;
+switch (_that) {
+case _Initial():
+return initial(_that.verifyInProgress,_that.isVerified,_that.message);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool verifyInProgress,  bool isVerified,  String? message)?  initial,}) {final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that.verifyInProgress,_that.isVerified,_that.message);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$InitialImplCopyWith<$Res>
-    implements $VerifyPurchaseStateCopyWith<$Res> {
-  factory _$$InitialImplCopyWith(
-    _$InitialImpl value,
-    $Res Function(_$InitialImpl) then,
-  ) = __$$InitialImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({bool verifyInProgress, bool isVerified, String? message});
+
+
+class _Initial implements VerifyPurchaseState {
+  const _Initial({this.verifyInProgress = false, this.isVerified = false, this.message});
+  
+
+@override@JsonKey() final  bool verifyInProgress;
+@override@JsonKey() final  bool isVerified;
+@override final  String? message;
+
+/// Create a copy of VerifyPurchaseState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.verifyInProgress, verifyInProgress) || other.verifyInProgress == verifyInProgress)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,verifyInProgress,isVerified,message);
+
+@override
+String toString() {
+  return 'VerifyPurchaseState.initial(verifyInProgress: $verifyInProgress, isVerified: $isVerified, message: $message)';
+}
+
+
 }
 
 /// @nodoc
-class __$$InitialImplCopyWithImpl<$Res>
-    extends _$VerifyPurchaseStateCopyWithImpl<$Res, _$InitialImpl>
-    implements _$$InitialImplCopyWith<$Res> {
-  __$$InitialImplCopyWithImpl(
-    _$InitialImpl _value,
-    $Res Function(_$InitialImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$InitialCopyWith<$Res> implements $VerifyPurchaseStateCopyWith<$Res> {
+  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
+@override @useResult
+$Res call({
+ bool verifyInProgress, bool isVerified, String? message
+});
 
-  /// Create a copy of VerifyPurchaseState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? verifyInProgress = null,
-    Object? isVerified = null,
-    Object? message = freezed,
-  }) {
-    return _then(
-      _$InitialImpl(
-        verifyInProgress:
-            null == verifyInProgress
-                ? _value.verifyInProgress
-                : verifyInProgress // ignore: cast_nullable_to_non_nullable
-                    as bool,
-        isVerified:
-            null == isVerified
-                ? _value.isVerified
-                : isVerified // ignore: cast_nullable_to_non_nullable
-                    as bool,
-        message:
-            freezed == message
-                ? _value.message
-                : message // ignore: cast_nullable_to_non_nullable
-                    as String?,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$InitialCopyWithImpl<$Res>
+    implements _$InitialCopyWith<$Res> {
+  __$InitialCopyWithImpl(this._self, this._then);
 
-class _$InitialImpl implements _Initial {
-  const _$InitialImpl({
-    this.verifyInProgress = false,
-    this.isVerified = false,
-    this.message,
-  });
+  final _Initial _self;
+  final $Res Function(_Initial) _then;
 
-  @override
-  @JsonKey()
-  final bool verifyInProgress;
-  @override
-  @JsonKey()
-  final bool isVerified;
-  @override
-  final String? message;
-
-  @override
-  String toString() {
-    return 'VerifyPurchaseState.initial(verifyInProgress: $verifyInProgress, isVerified: $isVerified, message: $message)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$InitialImpl &&
-            (identical(other.verifyInProgress, verifyInProgress) ||
-                other.verifyInProgress == verifyInProgress) &&
-            (identical(other.isVerified, isVerified) ||
-                other.isVerified == isVerified) &&
-            (identical(other.message, message) || other.message == message));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, verifyInProgress, isVerified, message);
-
-  /// Create a copy of VerifyPurchaseState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$InitialImplCopyWith<_$InitialImpl> get copyWith =>
-      __$$InitialImplCopyWithImpl<_$InitialImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-      bool verifyInProgress,
-      bool isVerified,
-      String? message,
-    )
-    initial,
-  }) {
-    return initial(verifyInProgress, isVerified, message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(bool verifyInProgress, bool isVerified, String? message)?
-    initial,
-  }) {
-    return initial?.call(verifyInProgress, isVerified, message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(bool verifyInProgress, bool isVerified, String? message)?
-    initial,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(verifyInProgress, isVerified, message);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
+/// Create a copy of VerifyPurchaseState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? verifyInProgress = null,Object? isVerified = null,Object? message = freezed,}) {
+  return _then(_Initial(
+verifyInProgress: null == verifyInProgress ? _self.verifyInProgress : verifyInProgress // ignore: cast_nullable_to_non_nullable
+as bool,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-abstract class _Initial implements VerifyPurchaseState {
-  const factory _Initial({
-    final bool verifyInProgress,
-    final bool isVerified,
-    final String? message,
-  }) = _$InitialImpl;
 
-  @override
-  bool get verifyInProgress;
-  @override
-  bool get isVerified;
-  @override
-  String? get message;
-
-  /// Create a copy of VerifyPurchaseState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$InitialImplCopyWith<_$InitialImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

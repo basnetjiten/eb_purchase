@@ -5,7 +5,7 @@ homepage: "https://github.com/basnetjiten/eb_purchases"
 publish_to: none
 
 environment:
-  sdk: ">= 3.7.0 <4.0.0"
+  sdk: ">=3.8.0 <=4.0.0"
   flutter: ">=3.29.0"
 
 dependencies:
@@ -13,23 +13,24 @@ dependencies:
     sdk: flutter
 
   #Billing
-  in_app_purchase: ^3.2.1
-  in_app_purchase_android: ^0.4.0+1
-  in_app_purchase_storekit: ^0.3.21
+  in_app_purchase: ^3.2.3
+  in_app_purchase_android: ^0.4.0+8
+  in_app_purchase_storekit: ^0.4.8+1
+
 
   #Device Information
-  device_info_plus: ^11.2.2
-  package_info_plus: ^8.1.4
+  device_info_plus: ^12.3.0
+  package_info_plus: ^9.0.0
 
 
   #data models
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   equatable: ^2.0.7
   injectable: ^2.5.0
 
   collection: ^1.19.0 # flutter sdk depends on version  1.19.0
-  pigeon: ^24.2.2
+  pigeon: ^26.0.3
 
 
 dev_dependencies:
@@ -38,10 +39,10 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
   #generators
-  build_runner: ^2.4.15
+  build_runner: ^2.7.1
 
-  json_serializable: ^6.9.4
-  freezed: ^2.5.8
+  json_serializable: ^6.11.0
+  freezed: ^3.2.0
   injectable_generator: ^2.7.0
 
 

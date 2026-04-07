@@ -23,6 +23,7 @@ class PurchaseRepoImpl {
     onProductFetched: onProductFetched,
   );
 
+  @Deprecated('Use purchaseProductSK2')
   Future<void> purchaseProduct({
     required String basePlanIdOrId,
     required ProductDetails product,
@@ -36,6 +37,38 @@ class PurchaseRepoImpl {
     await _ebPurchaseWrapper.buyProduct(
       purchaseParam: param,
       onError: (String error) => onError?.call(error),
+    );
+  }
+
+  Future<void> purchaseProductSK2({
+    required String basePlanIdOrId,
+    required ProductDetails product,
+    String? oldProductId,
+    OnError? onError,
+    String? appAccountToken,
+    int quantity = 1,
+    String? discountId,
+    String? discountKeyIdentifier,
+    String? discountNonce,
+    String? discountSignature,
+    int? discountTimestamp,
+  }) async {
+    final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
+      productDetails: product,
+      basePlanIdOrId: basePlanIdOrId,
+      oldProductId: oldProductId,
+    );
+
+    await _ebPurchaseWrapper.buyProductSK2(
+      purchaseParam: param,
+      onError: (String error) => onError?.call(error),
+      appAccountToken: appAccountToken,
+      quantity: quantity,
+      discountId: discountId,
+      discountKeyIdentifier: discountKeyIdentifier,
+      discountNonce: discountNonce,
+      discountSignature: discountSignature,
+      discountTimestamp: discountTimestamp,
     );
   }
 

@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'subscription_plan.freezed.dart';
 
 @freezed
-class SubscriptionPlan with _$SubscriptionPlan {
+abstract class SubscriptionPlan with _$SubscriptionPlan {
   const SubscriptionPlan._();
 
   /// Represents a unified subscription plan.
@@ -24,6 +24,7 @@ class SubscriptionPlan with _$SubscriptionPlan {
     GooglePlayProductDetails? googlePlayProductDetails,
     @Default(<GooglePlayOffer>[]) List<GooglePlayOffer> googlePlayOffers,
     // App Store Fields
+    ProductDetails? appStoreProductDetails,
     String? subscriptionGroupIdentifier,
     int? numberOfUnits,
     String? subscriptionPeriodUnit,
@@ -55,6 +56,7 @@ class SubscriptionPlan with _$SubscriptionPlan {
     @Default(0) double rawPrice,
     required String currencyCode,
     @Default('') String currencySymbol,
+    ProductDetails? appStoreProductDetails,
     String? subscriptionGroupIdentifier,
     int? numberOfUnits,
     String? subscriptionPeriodUnit,
