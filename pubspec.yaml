@@ -15,7 +15,7 @@ dependencies:
   #Billing
   in_app_purchase: ^3.2.3
   in_app_purchase_android: ^0.4.0+8
-  in_app_purchase_storekit: ^0.4.8+1
+  in_app_purchase_storekit: ^0.4.10
 
 
   #Device Information
@@ -27,7 +27,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   equatable: ^2.0.7
-  injectable: ^2.5.0
+  injectable: ^3.0.0
 
   collection: ^1.19.0 # flutter sdk depends on version  1.19.0
   pigeon: ^26.0.3
@@ -43,6 +43,6 @@ dev_dependencies:
 
   json_serializable: ^6.11.0
   freezed: ^3.2.0
-  injectable_generator: ^2.7.0
+  injectable_generator: ^3.0.2
 
 
