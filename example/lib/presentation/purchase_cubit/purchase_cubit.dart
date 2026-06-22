@@ -8,7 +8,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'purchase_cubit.freezed.dart';
-
 part 'purchase_state.dart';
 
 @injectable
@@ -108,12 +107,11 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   }) async {
     emit(state.copyWith(message: null, purchaseInProgress: true));
 
-    await _purchaseRepoImpl.purchaseProduct(
+    await _purchaseRepoImpl.purchaseProductSK2(
       basePlanIdOrId: basePlanIdOrId,
       product: productDetails,
-      onError:
-          (error) =>
-              emit(state.copyWith(message: error, purchaseInProgress: false)),
+      onError: (error) =>
+          emit(state.copyWith(message: error, purchaseInProgress: false)),
     );
 
     await Future<void>.delayed(
@@ -124,9 +122,8 @@ class PurchaseCubit extends Cubit<PurchaseState> {
   void initiateRestore() {
     emit(state.copyWith(purchaseInProgress: true));
     _purchaseRepoImpl.initiateRestore(
-      onError:
-          (error) =>
-              emit(state.copyWith(purchaseInProgress: false, message: error)),
+      onError: (error) =>
+          emit(state.copyWith(purchaseInProgress: false, message: error)),
     );
   }
 

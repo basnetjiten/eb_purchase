@@ -23,23 +23,6 @@ class PurchaseRepoImpl {
     onProductFetched: onProductFetched,
   );
 
-  @Deprecated('Use purchaseProductSK2')
-  Future<void> purchaseProduct({
-    required String basePlanIdOrId,
-    required ProductDetails product,
-    OnError? onError,
-  }) async {
-    final PurchaseParam param = _ebPurchaseWrapper.checkPlatformSubscription(
-      productDetails: product,
-      basePlanIdOrId: basePlanIdOrId,
-    );
-
-    await _ebPurchaseWrapper.buyProduct(
-      purchaseParam: param,
-      onError: (String error) => onError?.call(error),
-    );
-  }
-
   Future<void> purchaseProductSK2({
     required String basePlanIdOrId,
     required ProductDetails product,
