@@ -26,8 +26,9 @@ dependencies:
   collection: ^1.19.1
 
   #Device Information
-  device_info_plus: ^12.3.0
-  package_info_plus: ^9.0.0
+  #Device Information
+  device_info_plus: ^13.1.0
+  package_info_plus: ^10.1.0
 
   dartz:
 
