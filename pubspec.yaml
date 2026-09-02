@@ -13,9 +13,9 @@ dependencies:
     sdk: flutter
 
   #Billing
-  in_app_purchase: ^3.2.3
-  in_app_purchase_android: ^0.4.0+8
-  in_app_purchase_storekit: ^0.4.10
+  in_app_purchase: ^3.3.0
+  in_app_purchase_android: ^0.5.3
+  in_app_purchase_storekit: ^0.4.11+2
 
 
   #Device Information
